@@ -1,0 +1,7 @@
+.env
+.idea
+.bin
+config.json
+*.exe
+tgbot.exe
+.env
