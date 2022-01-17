@@ -51,9 +51,9 @@ func DbConnection() (*sql.DB, error) {
 	}
 	//defer db.Close()
 
-	db.SetMaxOpenConns(20)
-	db.SetMaxIdleConns(20)
-	//db.SetConnMaxLifetime(time.Minute * 5)
+	db.SetMaxOpenConns(10)
+	db.SetMaxIdleConns(10)
+	db.SetConnMaxLifetime(time.Minute * 5)
 
 	ctx, cancelfunc = context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancelfunc()
