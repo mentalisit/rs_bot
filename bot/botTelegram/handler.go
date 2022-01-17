@@ -17,7 +17,6 @@ func removeDuplicateElementInt(languages []int) []int {
 	return result
 }
 func myChatMember(member *tgbotapi.ChatMemberUpdated) {
-	fmt.Println(111, member.NewChatMember.Status)
 	if member.NewChatMember.Status == "member" {
 		Send(member.Chat.ID, fmt.Sprintf("@%s мне нужны права админа для коректной работы", member.From.UserName))
 	} else if member.NewChatMember.Status == "administrator" {
