@@ -41,27 +41,29 @@ func updatesChannelTg(u tgbotapi.UpdateConfig, db *sql.DB) {
 			fmt.Println("калбекк")
 			callback(update.CallbackQuery, db)
 
-		} else if update.Message != nil { //мой тестовый чат
-
-			logicRs(update.Message, db)
-
-		}else if update.MyChatMember !=nil{
+		} else if update.Message != nil {
+			if update.Message.Chat.IsPrivate() {
+				Send(update.Message.Chat.ID, "сорян это в разработке ")
+			} else {
+				logicRs(update.Message, db)
+			}
+		} else if update.MyChatMember != nil {
 			myChatMember(update.MyChatMember)
 
-		}else{
-			fmt.Println(1,update)
-			fmt.Println(2,update.ChatJoinRequest)
-			fmt.Println(3,update.ChannelPost)
-			fmt.Println(4,update.ChatMember)
-			fmt.Println(5,update.ChosenInlineResult)
-			fmt.Println(6,update.EditedChannelPost)
-			fmt.Println(7,update.InlineQuery)
-			fmt.Println(8,update.MyChatMember)
-			fmt.Println(9,update.Poll)
-			fmt.Println(10,update.PollAnswer)
-			fmt.Println(11,update.EditedMessage)
-			fmt.Println(12,update.PreCheckoutQuery)
-			fmt.Println(13,update.ShippingQuery)
+		} else {
+			fmt.Println(1, update)
+			fmt.Println(2, update.ChatJoinRequest)
+			fmt.Println(3, update.ChannelPost)
+			fmt.Println(4, update.ChatMember)
+			fmt.Println(5, update.ChosenInlineResult)
+			fmt.Println(6, update.EditedChannelPost)
+			fmt.Println(7, update.InlineQuery)
+			fmt.Println(8, update.MyChatMember)
+			fmt.Println(9, update.Poll)
+			fmt.Println(10, update.PollAnswer)
+			fmt.Println(11, update.EditedMessage)
+			fmt.Println(12, update.PreCheckoutQuery)
+			fmt.Println(13, update.ShippingQuery)
 
 		}
 
