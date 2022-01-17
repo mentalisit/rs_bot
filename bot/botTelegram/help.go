@@ -1,6 +1,15 @@
 package botTelegram
 
-import "fmt"
+import (
+	"fmt"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+)
+
+func updatesComand(c *tgbotapi.Message) {
+	if c.Command() == "help" {
+		hhelp(c.From.UserName, c.Chat.ID)
+	}
+}
 
 func hhelp(name string, chatid int64) {
 	mes := Send(chatid, fmt.Sprintf("Справка для  @%s \n"+
