@@ -2,7 +2,7 @@ package botDiscord
 
 import "database/sql"
 
-func RsPlus(db *sql.DB, lvlkz, timekz string, m *inMessage){//mesid string, name string, nameid string, guildid string, chatid string) {
+func RsPlus(db *sql.DB, lvlkz, timekz string, m *inMessage) { //mesid string, name string, nameid string, guildid string, chatid string) {
 	countName := countName(db, lvlkz, m.name, m.chatid)
 	if countName == 1 {
 		dMessage, _ := DSBot.ChannelMessageSend(m.chatid, m.nameid+" ты уже в очереди")
@@ -11,13 +11,13 @@ func RsPlus(db *sql.DB, lvlkz, timekz string, m *inMessage){//mesid string, name
 		countQueue := countQueue(db, lvlkz, m.chatid)
 		if countQueue == 0 {
 			//отправить что ты первый в очереди
-			counts0(db, lvlkz, timekz, m.name, m.nameid, m.guildid, m.chatid)
+			counts0(db, lvlkz, timekz, m)
 		} else if countQueue == 1 {
-			counts1(db, lvlkz, timekz, m.name, m.nameid, m.guildid, m.chatid)
+			counts1(db, lvlkz, timekz, m)
 		} else if countQueue == 2 {
-			counts2(db, lvlkz, timekz, m.name, m.nameid, m.guildid, m.chatid)
+			counts2(db, lvlkz, timekz, m)
 		} else if countQueue == 3 {
-			counts3(db, lvlkz, timekz, m.name, m.nameid, m.guildid, m.chatid)
+			counts3(db, lvlkz, timekz, m)
 		}
 	}
 

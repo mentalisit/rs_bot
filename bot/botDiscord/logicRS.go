@@ -10,22 +10,23 @@ import (
 
 var rs = make(chan string, 4)
 var rst = make(chan string, 4)
-type inMessage struct {
-	mtext string
-	nameMention string
-	nameid string
-	mesid string
-	name string
-	guildid string
-	chatid string
 
+type inMessage struct {
+	mtext       string
+	nameMention string
+	nameid      string
+	mesid       string
+	name        string
+	guildid     string
+	chatid      string
 }
+
 func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 	db, er := databaseMysqlDs.DbConnection()
 	if er != nil {
 		log.Println(er)
 	}
-	inmes:=inMessage{
+	inmes := inMessage{
 		mtext:       m.Content,
 		nameMention: m.Author.Mention(),
 		nameid:      m.Message.Author.ID,
@@ -45,11 +46,11 @@ func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID {
 		return
 	}
-	var kzb,subs,qwery,rss string
+	var kzb, subs, qwery, rss string
 
 	if len(m.Content) > 0 {
 		//fmt.Println(name, nameid)
-		str := inmes.mtext//mtext
+		str := inmes.mtext                                                 //mtext
 		re := regexp.MustCompile(`^([4-9]|[1][0-1])([\+]|[-])(\d|\d{2})$`) //три переменные
 		arr := (re.FindAllStringSubmatch(str, -1))
 		if len(arr) > 0 {
@@ -66,24 +67,25 @@ func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 		if kzb == "+" {
 			DSBot.ChannelMessageDelete(inmes.chatid, inmes.mesid)
-			RsPlus(db, lvlkz, timekz,&inmes)// mesid, name, nameid, guildid, chatid)
-		}else if kzb == "-" {
-			//DSBot.ChannelMessageDelete(chatid, mesid)
-			//RsMinus(db, name, nameid, lvlkz, chatid, guildid)
-			}
+			RsPlus(db, lvlkz, timekz, &inmes) // mesid, name, nameid, guildid, chatid)
+		} else if kzb == "-" {
+			DSBot.ChannelMessageDelete(inmes.chatid, inmes.mesid)
+			RsMinus(db, lvlkz, &inmes)
+		}
 
 		re3 := regexp.MustCompile(`^([\+]|[-])([4-9]|[1][0-1])$`) // две переменные для добавления или удаления подписок
 		arr3 := (re3.FindAllStringSubmatch(str, -1))
 		if len(arr3) > 0 {
-			lvlkz = "кз"+arr3[0][2]
+			lvlkz = "кз" + arr3[0][2]
 			subs = arr3[0][1]
 		}
 		if subs == "+" {
-			//Subscribe(guildid,lvlkz,nameid,chatid)
-			//go Delete1m(chatid,mesid)
+			Subscribe(m.GuildID, lvlkz, m.Message.Author.ID, m.ChannelID)
+			go Delete1m(m.ChannelID, m.ID)
 
-		}else if subs == "-" {
-			//Unsubscribe(guildid,lvlkz,nameid,chatid)
+		} else if subs == "-" {
+			Unsubscribe(m.GuildID, lvlkz, m.Message.Author.ID, m.ChannelID)
+			go Delete1m(m.ChannelID, m.ID)
 		}
 
 		re4 := regexp.MustCompile(`^(["о"]|["О"])([4-9]|[1][0-1])$`) // две переменные для чтения  очереди
@@ -94,7 +96,7 @@ func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 		if len(qwery) > 0 {
 			//DSBot.ChannelMessageDelete(chatid, mesid)
-			//MsqlRsQ(lvlkz,chatid)
+			//MsqlRsQ(lvlkz,m.ID)
 
 		}
 
@@ -105,23 +107,22 @@ func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 			rss = arr5[0][2]
 		}
 		if len(rss) > 0 {
-			//DSBot.ChannelMessageDelete(chatid, mesid)
-			//MsqlRsStart(lvlkz,name,chatid)
+			DSBot.ChannelMessageDelete(m.ChannelID, m.ID)
+			RsStart(db, lvlkz, m.Message.Author.Username, m.ID, m.GuildID)
 		}
-
 
 		//if mtext == "Справка" {
 		//	DSBot.ChannelMessageDelete(chatid, mesid)
-			//hhelp(name, chatid)
-//		} else if mtext == "1" {
-			//DSBot.ChannelMessageDelete(chatid, mesid)
-//			go Delete1m(chatid,mesid)
-//			mainTime()
+		//hhelp(name, chatid)
+		//		} else if mtext == "1" {
+		//DSBot.ChannelMessageDelete(chatid, mesid)
+		//			go Delete1m(chatid,mesid)
+		//			mainTime()
 
-//		} else if mtext == "2" {
-			//DSBot.ChannelMessageDelete(chatid, mesid)
+		//		} else if mtext == "2" {
+		//DSBot.ChannelMessageDelete(chatid, mesid)
 
-//		}
+		//		}
 		//go Delete5s(chatid,mesid)
 	}
 

@@ -15,7 +15,7 @@ func readAll(db *sql.DB, lvlkz string, chatid string) string {
 	for results.Next() {
 		var t Sborkzds
 		err = results.Scan(&t.Name, &t.Nameid, &t.Mesid, &t.Timedown)
-		rs <- fmt.Sprintf("%s", t.Nameid)
+		rs <- fmt.Sprintf("%s", t.Name)
 		rst <- fmt.Sprintf("%d", t.Timedown)
 		MessageComplexID = t.Mesid
 		return MessageComplexID

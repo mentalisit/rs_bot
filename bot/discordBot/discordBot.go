@@ -223,12 +223,6 @@ func SendChannel(chatid, text string) string {
 	return message.ID
 }
 
-func roleAdd() {
-	DSBot.GuildMemberRoleAdd("700238199070523412", "517719027385237506", "921298646761369610")
-}
-func roleRemove() {
-	DSBot.GuildMemberRoleRemove("700238199070523412", "517719027385237506", "921298646761369610")
-}
 func embedtest(chatid, nameid, guildid string) {
 	lvlkz = "6"
 	name1 = nameid + "  🕒 " + timekz
