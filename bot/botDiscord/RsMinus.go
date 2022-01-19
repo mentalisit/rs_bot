@@ -5,15 +5,15 @@ import (
 )
 
 func RsMinus(db *sql.DB, lvlkz string, m *inMessage) {
-	countName := countName(db, lvlkz, m.nameMention, m.chatid)
+	countName := countName(db, lvlkz, m.name, m.chatid)
 	if countName == 0 {
 		mes := SendChannel(m.chatid, m.nameMention+" ты не в очереди.")
 		go Delete5s(m.chatid, mes)
 	} else if countName > 0 {
 		//чтение айди очереди
-		mesid := readMesIDname(db, m.nameMention, lvlkz, m.chatid)
+		mesid := readMesIDname(db, m.name, lvlkz, m.chatid)
 		//удаление с базы данных
-		deleteSrorkz(db, m.nameMention, lvlkz, m.chatid)
+		deleteSrorkz(db, m.name, lvlkz, m.chatid)
 		mes := SendChannel(m.chatid, m.nameMention+" покинул очередь ")
 		go Delete5s(m.chatid, mes)
 		//проверяем, есть ли кто в очереди

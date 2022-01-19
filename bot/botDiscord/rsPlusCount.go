@@ -6,6 +6,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
+var mesContentNil string
+
 //логика очереди
 func counts0(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	name1 = m.nameMention + "  🕒 " + timekz
@@ -19,7 +21,6 @@ func counts0(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	var mesContentNil string
 	DSBot.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Content: &mesContentNil,
 		Embed:   Embeds,
@@ -37,9 +38,8 @@ func counts1(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	name4 = ""
 	lvlk := roleToIdPing(lvlkz, m.guildid)
 	mes := SendChannel(m.chatid, lvlk+" 2/4 "+m.nameMention+" присоеденился к очереди")
-	Delete5s(m.chatid, mes)
+	go Delete5s(m.chatid, mes)
 	EmbedDS(name1, name2, name3, name4, lvlk)
-	var mesContentNil string
 	DSBot.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Content: &mesContentNil,
 		Embed:   Embeds,
@@ -57,9 +57,8 @@ func counts2(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	name4 = ""
 	lvlk := roleToIdPing(lvlkz, m.guildid)
 	mes := SendChannel(m.chatid, lvlk+" 3/4 "+m.nameMention+" присоеденился к очереди")
-	Delete5s(m.chatid, mes)
+	go Delete5s(m.chatid, mes)
 	EmbedDS(name1, name2, name3, name4, lvlk)
-	var mesContentNil string
 	DSBot.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Content: &mesContentNil,
 		Embed:   Embeds,
@@ -80,10 +79,9 @@ func counts3(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	name4 = m.nameMention + "  🕒  " + timekz
 	lvlk := roleToIdPing(lvlkz, m.guildid)
 	mes := SendChannel(m.chatid, " 4/4 "+m.nameMention+" присоеденился к очереди")
-	Delete5s(m.chatid, mes)
+	go Delete5s(m.chatid, mes)
 	mes = SendChannel(m.chatid, "очередь заполнена нужно тут кучку всего написать ")
 	EmbedDS(names1, names2, names3, name4, lvlk)
-	var mesContentNil string
 	DSBot.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Content: &mesContentNil,
 		Embed:   Embeds,

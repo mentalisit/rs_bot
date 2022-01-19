@@ -5,7 +5,7 @@ import "database/sql"
 func RsPlus(db *sql.DB, lvlkz, timekz string, m *inMessage) { //mesid string, name string, nameid string, guildid string, chatid string) {
 	countName := countName(db, lvlkz, m.name, m.chatid)
 	if countName == 1 {
-		dMessage, _ := DSBot.ChannelMessageSend(m.chatid, m.nameid+" ты уже в очереди")
+		dMessage, _ := DSBot.ChannelMessageSend(m.chatid, m.nameMention+" ты уже в очереди")
 		go Delete5s(m.chatid, dMessage.ID)
 	} else {
 		countQueue := countQueue(db, lvlkz, m.chatid)
