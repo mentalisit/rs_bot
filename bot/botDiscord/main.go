@@ -76,12 +76,26 @@ func Start() {
 }
 
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	fmt.Println(len(m.Message.Content))
 	if m.Author.ID == s.State.User.ID || m.Author.Bot || len(m.Message.Content) < 1 {
 		return
 	}
+	if len(m.Content) > 0 {
+		channel, err := DSBot.Channel(m.ChannelID)
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		if channel.Name == "кз" || channel.Name == "сбор на кз" ||
+			channel.Name == "🎯-кз" || channel.Name == "сбор-на-кз-🔴" {
+
+			go Delete3m(m.ChannelID, m.ID)
+			logicRS(s, m)
+		}
+
+	}
 
 	if m.ChannelID == "909527364730490890" {
+		fmt.Println(m.Content)
 		logicRS(s, m)
 	}
 
