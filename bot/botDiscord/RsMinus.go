@@ -18,15 +18,16 @@ func RsMinus(db *sql.DB, lvlkz string, m *inMessage) {
 		go Delete5s(m.chatid, mes)
 		//проверяем, есть ли кто в очереди
 		countQueue := countQueue(db, lvlkz, m.chatid)
+		numberkz := readNumberkz(db, lvlkz, m.chatid)
 		// совподения количество  условие
 		if countQueue == 0 {
 			mes := SendChannel(m.chatid, "Очередь КЗ была удалена .")
 			go Delete5s(m.chatid, mes)
 			go Delete5s(m.chatid, mesid)
 		} else if countQueue == 1 {
-			counts1r(db, m.chatid, m.guildid, lvlkz)
+			counts1r(db, m.chatid, m.guildid, lvlkz, numberkz)
 		} else if countQueue == 2 {
-			counts2r(db, m.chatid, m.guildid, lvlkz)
+			counts2r(db, m.chatid, m.guildid, lvlkz, numberkz)
 		}
 	}
 }

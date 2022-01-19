@@ -9,13 +9,13 @@ import (
 var mesContentNil string
 
 //логика очереди
-func counts0(db *sql.DB, lvlkz, timekz string, m *inMessage) {
+func counts0(db *sql.DB, lvlkz, timekz string, m *inMessage, numkz int) {
 	name1 = m.nameMention + "  🕒 " + timekz
 	name2 = ""
 	name3 = ""
 	name4 = ""
 	lvlk := roleToIdPing(lvlkz, m.guildid)
-	EmbedDS(name1, name2, name3, name4, lvlk)
+	EmbedDS(name1, name2, name3, name4, lvlk, numkz)
 	mesCompl, err := DSBot.ChannelMessageSendComplex(m.chatid, &discordgo.MessageSend{
 		Content: m.nameMention + " запустил очередь " + lvlk})
 	if err != nil {
@@ -29,9 +29,8 @@ func counts0(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	})
 	insertSborkzAll(db, lvlkz, timekz, mesCompl.ID, m.name, m.nameid, m.guildid, m.chatid, m.nameMention)
 }
-func counts1(db *sql.DB, lvlkz, timekz string, m *inMessage) {
+func counts1(db *sql.DB, lvlkz, timekz string, m *inMessage, numkz int) {
 	mesid := readAll(db, lvlkz, m.chatid)
-	fmt.Println(mesid)
 	name1 = <-rs + "  🕒  " + <-rst
 	name2 = m.nameMention + "  🕒  " + timekz
 	name3 = ""
@@ -39,7 +38,7 @@ func counts1(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	lvlk := roleToIdPing(lvlkz, m.guildid)
 	mes := SendChannel(m.chatid, lvlk+" 2/4 "+m.nameMention+" присоеденился к очереди")
 	go Delete5s(m.chatid, mes)
-	EmbedDS(name1, name2, name3, name4, lvlk)
+	EmbedDS(name1, name2, name3, name4, lvlk, numkz)
 	DSBot.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Content: &mesContentNil,
 		Embed:   Embeds,
@@ -48,9 +47,8 @@ func counts1(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	})
 	insertSborkzAll(db, lvlkz, timekz, mesid, m.name, m.nameid, m.guildid, m.chatid, m.nameMention)
 }
-func counts2(db *sql.DB, lvlkz, timekz string, m *inMessage) {
+func counts2(db *sql.DB, lvlkz, timekz string, m *inMessage, numkz int) {
 	mesid := readAll(db, lvlkz, m.chatid)
-	fmt.Println(mesid)
 	name1 = <-rs + "  🕒  " + <-rst
 	name2 = <-rs + "  🕒  " + <-rst
 	name3 = m.nameMention + "  🕒  " + timekz
@@ -58,7 +56,7 @@ func counts2(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	lvlk := roleToIdPing(lvlkz, m.guildid)
 	mes := SendChannel(m.chatid, lvlk+" 3/4 "+m.nameMention+" присоеденился к очереди")
 	go Delete5s(m.chatid, mes)
-	EmbedDS(name1, name2, name3, name4, lvlk)
+	EmbedDS(name1, name2, name3, name4, lvlk, numkz)
 	DSBot.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Content: &mesContentNil,
 		Embed:   Embeds,
@@ -67,9 +65,8 @@ func counts2(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	})
 	insertSborkzAll(db, lvlkz, timekz, mesid, m.name, m.nameid, m.guildid, m.chatid, m.nameMention)
 }
-func counts3(db *sql.DB, lvlkz, timekz string, m *inMessage) {
+func counts3(db *sql.DB, lvlkz, timekz string, m *inMessage, numkz int) {
 	mesid := readAll(db, lvlkz, m.chatid)
-	fmt.Println(mesid)
 	name1 = <-rs
 	names1 := name1 + "  🕒  " + <-rst
 	name2 = <-rs
@@ -81,7 +78,7 @@ func counts3(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	mes := SendChannel(m.chatid, " 4/4 "+m.nameMention+" присоеденился к очереди")
 	go Delete5s(m.chatid, mes)
 	mes = SendChannel(m.chatid, "очередь заполнена нужно тут кучку всего написать ")
-	EmbedDS(names1, names2, names3, name4, lvlk)
+	EmbedDS(names1, names2, names3, name4, lvlk, numkz)
 	DSBot.ChannelMessageEditComplex(&discordgo.MessageEdit{
 		Content: &mesContentNil,
 		Embed:   Embeds,

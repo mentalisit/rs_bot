@@ -9,15 +9,16 @@ func RsPlus(db *sql.DB, lvlkz, timekz string, m *inMessage) { //mesid string, na
 		go Delete5s(m.chatid, dMessage.ID)
 	} else {
 		countQueue := countQueue(db, lvlkz, m.chatid)
+		numberkz := readNumberkz(db, lvlkz, m.chatid)
 		if countQueue == 0 {
 			//отправить что ты первый в очереди
-			counts0(db, lvlkz, timekz, m)
+			counts0(db, lvlkz, timekz, m, numberkz)
 		} else if countQueue == 1 {
-			counts1(db, lvlkz, timekz, m)
+			counts1(db, lvlkz, timekz, m, numberkz)
 		} else if countQueue == 2 {
-			counts2(db, lvlkz, timekz, m)
+			counts2(db, lvlkz, timekz, m, numberkz)
 		} else if countQueue == 3 {
-			counts3(db, lvlkz, timekz, m)
+			counts3(db, lvlkz, timekz, m, numberkz)
 		}
 	}
 
