@@ -108,7 +108,7 @@ func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 		if len(rss) > 0 {
 			DSBot.ChannelMessageDelete(m.ChannelID, m.ID)
-			RsStart(db, lvlkz, m.Message.Author.Username, m.ID, m.GuildID)
+			RsStart(db, lvlkz, inmes.name, inmes.chatid, inmes.guildid)
 		}
 
 		//if mtext == "Справка" {

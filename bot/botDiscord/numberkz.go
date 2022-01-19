@@ -24,6 +24,7 @@ func readNumberkz(db *sql.DB, lvlkz string, chatid string) int {
 	}
 	return number
 }
+
 func updateNumberkz(db *sql.DB, lvlkz string, number int, chatid string) {
 	fmt.Println(number)
 	//number=number+1
@@ -31,6 +32,6 @@ func updateNumberkz(db *sql.DB, lvlkz string, number int, chatid string) {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("обновлено")
+	fmt.Println("обновлено номер кз ")
 
 }
