@@ -26,7 +26,7 @@ func counts0(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 		ID:      mesCompl.ID,
 		Channel: m.chatid,
 	})
-	insertSborkzAll(db, lvlkz, timekz, mesCompl.ID, m.nameMention, m.nameid, m.guildid, m.chatid)
+	insertSborkzAll(db, lvlkz, timekz, mesCompl.ID, m.name, m.nameid, m.guildid, m.chatid, m.nameMention)
 }
 func counts1(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	mesid := readAll(db, lvlkz, m.chatid)
@@ -46,7 +46,7 @@ func counts1(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 		ID:      mesid,
 		Channel: m.chatid,
 	})
-	insertSborkzAll(db, lvlkz, timekz, mesid, m.nameMention, m.nameid, m.guildid, m.chatid)
+	insertSborkzAll(db, lvlkz, timekz, mesid, m.name, m.nameid, m.guildid, m.chatid, m.nameMention)
 }
 func counts2(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	mesid := readAll(db, lvlkz, m.chatid)
@@ -66,7 +66,7 @@ func counts2(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 		ID:      mesid,
 		Channel: m.chatid,
 	})
-	insertSborkzAll(db, lvlkz, timekz, mesid, m.nameMention, m.nameid, m.guildid, m.chatid)
+	insertSborkzAll(db, lvlkz, timekz, mesid, m.name, m.nameid, m.guildid, m.chatid, m.nameMention)
 }
 func counts3(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 	mesid := readAll(db, lvlkz, m.chatid)
@@ -90,7 +90,7 @@ func counts3(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 		ID:      mesid,
 		Channel: m.chatid,
 	})
-	insertSborkzAll(db, lvlkz, timekz, mesid, m.nameMention, m.nameid, m.guildid, m.chatid)
+	insertSborkzAll(db, lvlkz, timekz, mesid, m.name, m.nameid, m.guildid, m.chatid, m.nameMention)
 	updateActive1(db, lvlkz, m.chatid)
 	//update похода +
 }

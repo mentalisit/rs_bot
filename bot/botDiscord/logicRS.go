@@ -13,10 +13,10 @@ var rst = make(chan string, 4)
 
 type inMessage struct {
 	mtext       string
+	name        string
 	nameMention string
 	nameid      string
 	mesid       string
-	name        string
 	guildid     string
 	chatid      string
 }

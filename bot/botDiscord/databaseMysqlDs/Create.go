@@ -12,6 +12,7 @@ func createTableSborkz(db *sql.DB) error {
 		id int primary key auto_increment,
 		name VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
     	nameid VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
+    	mention VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
 		guildid VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
     	lvlkz VARCHAR(20) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
 		chatid VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',

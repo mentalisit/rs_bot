@@ -8,14 +8,14 @@ import (
 
 func readAll(db *sql.DB, lvlkz string, chatid string) string {
 	MessageComplexID := "empty"
-	results, err := db.Query("SELECT name,nameid,mesid,timedown FROM sborkz WHERE lvlkz = ? AND chatid = ? AND active = 0", lvlkz, chatid)
+	results, err := db.Query("SELECT name,nameid,mention,mesid,timedown FROM sborkz WHERE lvlkz = ? AND chatid = ? AND active = 0", lvlkz, chatid)
 	if err != nil {
 		log.Println(err)
 	}
 	for results.Next() {
 		var t Sborkzds
-		err = results.Scan(&t.Name, &t.Nameid, &t.Mesid, &t.Timedown)
-		rs <- fmt.Sprintf("%s", t.Name)
+		err = results.Scan(&t.Name, &t.Nameid, &t.Mention, &t.Mesid, &t.Timedown)
+		rs <- fmt.Sprintf("%s", t.Mention)
 		rst <- fmt.Sprintf("%d", t.Timedown)
 		MessageComplexID = t.Mesid
 		return MessageComplexID
