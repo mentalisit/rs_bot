@@ -10,21 +10,19 @@ import (
 )
 
 var (
-	BotId       string
-	DSBot       *discordgo.Session
-	err         error
-	MentionUser *discordgo.User
-	MentionRole discordgo.Role
-	AddReact    *discordgo.MessageReactionAdd
-	timekz      string
-	lvlkz       string
+	BotId    string
+	DSBot    *discordgo.Session
+	err      error
+	AddReact *discordgo.MessageReactionAdd
+	addr     *discordgo.MessageReactions
+	timekz   string
+	lvlkz    string
 )
 
 type DiscordBot struct {
 	DSBot       *discordgo.Session
 	MentionUser *discordgo.User
 	MentionRole discordgo.Role
-	addReact    *discordgo.MessageReactionAdd
 }
 
 var (
@@ -68,6 +66,7 @@ func Start() {
 	}
 	BotId = u.ID
 	DSBot.AddHandler(messageHandler)
+	DSBot.AddHandler(MessageReactionAdd)
 	err = DSBot.Open()
 	if err != nil {
 		fmt.Println(err.Error())
@@ -75,7 +74,9 @@ func Start() {
 	log.Println("Бот DISCORD запущен!!!")
 
 }
+func MessageReactionAdd(s *discordgo.Session, e *discordgo.Event, r *discordgo.MessageReactionAdd) {
 
+}
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID || m.Author.Bot || len(m.Message.Content) < 1 {
 		return
