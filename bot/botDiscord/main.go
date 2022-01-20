@@ -5,6 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
+	"rs_bot/bot/botDiscord/databaseMysqlDs"
 	"time"
 )
 
@@ -100,6 +101,8 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if m.Content == "A" {
+		db, _ := databaseMysqlDs.DbConnection()
+		msqlTimeo(db)
 		//Subscribe(m.GuildID, "5", m.Message.Author.ID, m.Message.ChannelID)
 	}
 
