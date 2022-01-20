@@ -2,6 +2,7 @@ package timer
 
 import (
 	"log"
+	"rs_bot/bot/botDiscord"
 	"rs_bot/bot/botTelegram"
 	"time"
 )
@@ -14,6 +15,7 @@ func Timer() {
 		log.Println("минута")
 
 		go botTelegram.MinusMin()
+		go botDiscord.MinusMin()
 
 	}
 }
