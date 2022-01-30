@@ -5,7 +5,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 	"log"
 	"os"
-	"rs_bot/bot/botDiscord/databaseMysqlDs"
+	"strings"
 	"time"
 )
 
@@ -18,6 +18,7 @@ var (
 	emOK      = "✅"
 	emCancel  = "❎"
 	emRsStart = "🚀"
+	emPl30    = "⌛"
 	emPlus    = "➕"
 	emMinus   = "➖"
 )
@@ -75,6 +76,7 @@ func Start() {
 		fmt.Println(err.Error())
 	}
 	log.Println("Бот DISCORD запущен!!!")
+	readChannel()
 
 }
 func MessageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
@@ -88,36 +90,32 @@ func MessageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
 }
 
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if m.Author.ID == s.State.User.ID || m.Author.Bot || len(m.Message.Content) < 1 {
+	if m.Author.ID == s.State.User.ID || len(m.Message.Content) < 1 {
 		return
 	}
 	if len(m.Content) > 0 {
-		channel, err := DSBot.Channel(m.ChannelID)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		if channel.Name == "кз" || channel.Name == "сбор-на-кз" ||
-			channel.Name == "🎯-кз" || channel.Name == "сбор-на-кз-🔴" {
-
-			go Delete3m(m.ChannelID, m.ID)
+		if checkChannel(m.ChannelID) {
 			logicRS(s, m)
+			cleanChat(m)
 		}
-
+		accesChat(m)
 	}
 
 	if m.ChannelID == "909527364730490890" {
 		fmt.Println(m.Content)
 		logicRS(s, m)
-	}
-
-	if m.Content == "A" {
-		db, _ := databaseMysqlDs.DbConnection()
-		msqlTimeo(db)
-		//Subscribe(m.GuildID, "5", m.Message.Author.ID, m.Message.ChannelID)
+		cleanChat(m)
 	}
 
 }
+
+func cleanChat(m *discordgo.MessageCreate) {
+	res := strings.HasPrefix(m.Content, ".")
+	if res == false {
+		go Delete3m(m.ChannelID, m.ID)
+	}
+}
+
 func roleToIdPing(rolePing, guildid string) string {
 	//var pingId string          //создаю переменную
 	rolPing := "кз" + rolePing // добавляю буквы
@@ -221,5 +219,35 @@ func addEnojiRsQueue(chatid, mesid string) {
 	DSBot.MessageReactionAdd(chatid, mesid, emOK)
 	DSBot.MessageReactionAdd(chatid, mesid, emCancel)
 	DSBot.MessageReactionAdd(chatid, mesid, emRsStart)
+	DSBot.MessageReactionAdd(chatid, mesid, emPl30)
 
+}
+
+//получаем есть ли роль и саму роль
+func roleExists(g *discordgo.Guild, nameRoles string) (bool, *discordgo.Role) {
+	nameRoles = strings.ToLower(nameRoles)
+
+	for _, role := range g.Roles {
+		if role.Name == "@everyone" {
+			continue
+		}
+		if strings.ToLower(role.Name) == nameRoles {
+			return true, role
+		}
+	}
+	return false, nil
+}
+
+func checkAdmin(nameid string, chatid string) bool {
+	perms, err := DSBot.UserChannelPermissions(nameid, chatid)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if perms&discordgo.PermissionAdministrator != 0 {
+		fmt.Println("админ")
+		return true
+	} else {
+		fmt.Println("не админ")
+		return false
+	}
 }
