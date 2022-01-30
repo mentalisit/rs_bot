@@ -121,6 +121,56 @@ func CreateTableTempTop(db *sql.DB) error {
 	return nil
 }
 
+func CreateTableTempTopEvent(db *sql.DB) error {
+	query := `CREATE TABLE IF NOT EXISTS temptopevent(
+		id int primary key auto_increment,
+		name VARCHAR(30) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
+		numkz INT(11) NULL DEFAULT NULL,
+		points INT(11) NULL DEFAULT NULL
+	)`
+	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancelfunc()
+	res, err := db.ExecContext(ctx, query)
+	if err != nil {
+		log.Printf("РћС€РёР±РєР° СЃРѕР·РґР°РЅРёСЏ С‚Р°Р±Р»РёС†С‹ %s ", err)
+		return err
+	}
+	rows, err := res.RowsAffected()
+	if err != nil {
+		log.Printf("РѕС€РёР±РєР° С‡С‚РµРЅРёСЏ СЃС‚СЂРѕРє  %s ", err)
+		return err
+	}
+	if rows != 0 {
+		log.Printf("С‡С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє: %d", rows)
+	}
+
+	return nil
+}
+
+func CreateTableChannel(db *sql.DB) error {
+	query := `CREATE TABLE IF NOT EXISTS channel(
+		id int primary key auto_increment,
+		channel VARCHAR(30) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci'
+	)`
+	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancelfunc()
+	res, err := db.ExecContext(ctx, query)
+	if err != nil {
+		log.Printf("РћС€РёР±РєР° СЃРѕР·РґР°РЅРёСЏ С‚Р°Р±Р»РёС†С‹ %s ", err)
+		return err
+	}
+	rows, err := res.RowsAffected()
+	if err != nil {
+		log.Printf("РѕС€РёР±РєР° С‡С‚РµРЅРёСЏ СЃС‚СЂРѕРє  %s ", err)
+		return err
+	}
+	if rows != 0 {
+		log.Printf("С‡С‚Рѕ-С‚Рѕ РїРѕС€Р»Рѕ РЅРµ С‚Р°Рє: %d", rows)
+	}
+
+	return nil
+}
+
 func createTableTEST(db *sql.DB) error {
 	query := `CREATE TABLE IF NOT EXISTS product(
 		product_id int primary key auto_increment, 

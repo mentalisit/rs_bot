@@ -86,8 +86,8 @@ func init() {
 	err = createTableSborkz(db)
 	createTableNumkz(db)
 	createTableRsevent(db)
-	//createTableSubscribe(db)
-	//createTableSubscribe3(db)
+	CreateTableTempTopEvent(db)
+	CreateTableChannel(db)
 	if err != nil {
 		log.Printf("Create product table failed with error %s", err)
 		return

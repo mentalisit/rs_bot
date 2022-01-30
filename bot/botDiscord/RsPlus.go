@@ -26,13 +26,14 @@ func RsPlus(db *sql.DB, lvlkz, timekz string, m *inMessage) {
 		}
 	}
 }
+
 func Pl30(db *sql.DB, lvlkz string, m *inMessage) {
 	countName := countName(db, lvlkz, m.name, m.chatid)
 	if countName == 0 {
 		dmess, _ := DSBot.ChannelMessageSend(m.chatid, m.nameMention+" ты не в очереди ")
 		go Delete5s(m.chatid, dmess.ID)
 	} else if countName > 0 {
-		dmes, _ := DSBot.ChannelMessageSend(m.chatid, m.nameMention+" время будет добавлено")
+		dmes, _ := DSBot.ChannelMessageSend(m.chatid, m.nameMention+" время обновлено +30")
 		go Delete5s(m.chatid, dmes.ID)
 		fmt.Println("mmm ", timekz, lvlkz, m.chatid, m.name)
 		_, err := db.Exec(`update sborkz set timedown = timedown+30 where lvlkz = ? AND chatid = ?  AND name = ?`,
