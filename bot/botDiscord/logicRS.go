@@ -120,14 +120,14 @@ func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 			numkz, err := strconv.Atoi(arr7[0][2])
 			if err != nil {
 			}
-			EventPoints(db, inmes.chatid, inmes.name, numkz, points)
+			EventPoints(db, inmes.chatid, inmes.name, inmes.nameid, numkz, points)
 			Delete5s(inmes.chatid, inmes.mesid)
 		}
 		if mtext == "Ивент старт" {
-			EventStart(db, name, chatid)
+			EventStart(db, name, inmes.nameid, chatid)
 			Delete5s(chatid, mesid)
 		} else if mtext == "Ивент стоп" {
-			EventStop(db, name, chatid)
+			EventStop(db, name, inmes.nameid, chatid)
 			Delete5s(chatid, mesid)
 		} else if mtext == "Справка" {
 			DSBot.ChannelMessageDelete(chatid, mesid)
@@ -191,7 +191,7 @@ func readReactionQueue(r *discordgo.MessageReactionAdd, message *discordgo.Messa
 			if Minus(db, inm.name, inm.chatid) {
 				DSBot.ChannelMessageDelete(inm.chatid, inm.mesid)
 			}
-		} else if r.Emoji.Name == emOK || r.Emoji.Name == emCancel || r.Emoji.Name == emRsStart {
+		} else if r.Emoji.Name == emOK || r.Emoji.Name == emCancel || r.Emoji.Name == emRsStart || r.Emoji.Name == emPl30 {
 			lvlkz, err = readMesID(db, r.MessageID)
 			if r.Emoji.Name == emOK {
 				RsPlus(db, lvlkz, "30", &inm)
@@ -199,6 +199,8 @@ func readReactionQueue(r *discordgo.MessageReactionAdd, message *discordgo.Messa
 				RsMinus(db, lvlkz, &inm)
 			} else if r.Emoji.Name == emRsStart {
 				RsStart(db, lvlkz, inm.name, inm.chatid, inm.guildid)
+			} else if r.Emoji.Name == emPl30 {
+				Pl30(db, lvlkz, &inm)
 			}
 		}
 	}

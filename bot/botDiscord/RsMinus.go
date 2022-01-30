@@ -14,7 +14,7 @@ func RsMinus(db *sql.DB, lvlkz string, m *inMessage) {
 		mesid := readMesIDname(db, m.name, lvlkz, m.chatid)
 		//удаление с базы данных
 		deleteSrorkz(db, m.name, lvlkz, m.chatid)
-		mes := SendChannel(m.chatid, m.nameMention+" покинул очередь ")
+		mes := SendChannel(m.chatid, m.name+" покинул очередь ")
 		go Delete5s(m.chatid, mes)
 		//проверяем, есть ли кто в очереди
 		countQueue := countQueue(db, lvlkz, m.chatid)
