@@ -23,7 +23,7 @@ func RsMinus(db *sql.DB, lvlkz string, m *inMessage) {
 		if countQueue == 0 {
 			mes := SendChannel(m.chatid, "Очередь КЗ была удалена .")
 			go Delete5s(m.chatid, mes)
-			go Delete5s(m.chatid, mesid)
+			DSBot.ChannelMessageDelete(m.chatid, mesid)
 		} else if countQueue == 1 {
 			counts1r(db, m.chatid, m.guildid, lvlkz, numberkz)
 		} else if countQueue == 2 {

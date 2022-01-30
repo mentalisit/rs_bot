@@ -10,13 +10,16 @@ import (
 )
 
 var (
-	BotId    string
-	DSBot    *discordgo.Session
-	err      error
-	AddReact *discordgo.MessageReactionAdd
-	addr     *discordgo.MessageReactions
-	timekz   string
-	lvlkz    string
+	BotId     string
+	DSBot     *discordgo.Session
+	err       error
+	timekz    string
+	lvlkz     string
+	emOK      = "✅"
+	emCancel  = "❎"
+	emRsStart = "🚀"
+	emPlus    = "➕"
+	emMinus   = "➖"
 )
 
 type DiscordBot struct {
@@ -45,7 +48,7 @@ func EmbedDS(name1, name2, name3, name4, lvlkz string, numkz int) {
 
 		Fields: []*discordgo.MessageEmbedField{
 			&discordgo.MessageEmbedField{
-				Name:   "реакции ",
+				Name:   fmt.Sprintf(" %s для добавления в очередь\n%s для выхода из очереди\n%s принудительный старт", emOK, emCancel, emRsStart),
 				Value:  "Данные обновлены: ",
 				Inline: true,
 			}},
@@ -74,9 +77,16 @@ func Start() {
 	log.Println("Бот DISCORD запущен!!!")
 
 }
-func MessageReactionAdd(s *discordgo.Session, e *discordgo.Event, r *discordgo.MessageReactionAdd) {
-
+func MessageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
+	message, err := DSBot.ChannelMessage(r.ChannelID, r.MessageID)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if message.Author.ID == s.State.User.ID {
+		readReactionQueue(r, message)
+	}
 }
+
 func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if m.Author.ID == s.State.User.ID || m.Author.Bot || len(m.Message.Content) < 1 {
 		return
@@ -87,7 +97,7 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 			fmt.Println(err)
 		}
 
-		if channel.Name == "кз" || channel.Name == "сбор на кз" ||
+		if channel.Name == "кз" || channel.Name == "сбор-на-кз" ||
 			channel.Name == "🎯-кз" || channel.Name == "сбор-на-кз-🔴" {
 
 			go Delete3m(m.ChannelID, m.ID)
@@ -205,4 +215,11 @@ func removeDuplicateElementString(mesididid []string) []string {
 		}
 	}
 	return result
+}
+
+func addEnojiRsQueue(chatid, mesid string) {
+	DSBot.MessageReactionAdd(chatid, mesid, emOK)
+	DSBot.MessageReactionAdd(chatid, mesid, emCancel)
+	DSBot.MessageReactionAdd(chatid, mesid, emRsStart)
+
 }

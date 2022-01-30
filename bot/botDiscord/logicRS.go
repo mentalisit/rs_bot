@@ -6,6 +6,7 @@ import (
 	"log"
 	"regexp"
 	"rs_bot/bot/botDiscord/databaseMysqlDs"
+	"strconv"
 )
 
 var rs = make(chan string, 4)
@@ -35,13 +36,13 @@ func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 		guildid:     m.GuildID,
 		chatid:      m.ChannelID,
 	}
-	//mtext :=  //текст сообщения
-	//nameMention:=m.Author.Mention()
+	mtext := m.Content //текст сообщения
+	nameMention := m.Author.Mention()
 	//nameid := m.Message.Author.ID
-	//mesid := m.ID             // ид сообщения 911747673093197844
-	//name := m.Message.Author.Username//m.Author.Username // имя Mentalisit
+	mesid := m.ID                     // ид сообщения 911747673093197844
+	name := m.Message.Author.Username //m.Author.Username // имя Mentalisit
 	//guildid := m.GuildID      // id 700238199070523412
-	//chatid := m.ChannelID     //chat id 909527364730490890
+	chatid := m.ChannelID //chat id 909527364730490890
 
 	if m.Author.ID == s.State.User.ID {
 		return
@@ -95,8 +96,8 @@ func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 			lvlkz = arr4[0][2]
 		}
 		if len(qwery) > 0 {
-			//DSBot.ChannelMessageDelete(chatid, mesid)
-			//MsqlRsQ(lvlkz,m.ID)
+			go Delete5s(chatid, mesid)
+			Queue(db, lvlkz, m.ChannelID, m.GuildID, false)
 
 		}
 
@@ -110,11 +111,40 @@ func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 			DSBot.ChannelMessageDelete(m.ChannelID, m.ID)
 			RsStart(db, lvlkz, inmes.name, inmes.chatid, inmes.guildid)
 		}
-
-		//if mtext == "Справка" {
-		//	DSBot.ChannelMessageDelete(chatid, mesid)
-		//hhelp(name, chatid)
-		//		} else if mtext == "1" {
+		re7 := regexp.MustCompile(`^(["К"])\s([0-9]+)\s([0-9]+)$`) // ивент
+		arr7 := (re7.FindAllStringSubmatch(str, -1))
+		if len(arr7) > 0 {
+			points, err := strconv.Atoi(arr7[0][3])
+			if err != nil {
+			}
+			numkz, err := strconv.Atoi(arr7[0][2])
+			if err != nil {
+			}
+			EventPoints(db, inmes.chatid, inmes.name, numkz, points)
+			Delete5s(inmes.chatid, inmes.mesid)
+		}
+		if mtext == "Ивент старт" {
+			EventStart(db, name, chatid)
+			Delete5s(chatid, mesid)
+		} else if mtext == "Ивент стоп" {
+			EventStop(db, name, chatid)
+			Delete5s(chatid, mesid)
+		} else if mtext == "Справка" {
+			DSBot.ChannelMessageDelete(chatid, mesid)
+			Delete3m(chatid, hhelp(nameMention, chatid))
+		} else if mtext == "Справка1" {
+			DSBot.ChannelMessageDelete(chatid, mesid)
+			hhelp1(chatid)
+		} else if mtext == "+" { //продление очереди на 30мин
+			go Delete5s(chatid, mesid)
+			Plus(db, name, chatid)
+		} else if mtext == "-" {
+			go Delete5s(chatid, mesid)
+			Minus(db, name, chatid)
+		} else if mtext == "Топ" {
+			go Delete5s(chatid, mesid)
+			topAll(db, chatid)
+		} //else if mtext == "1" {
 		//DSBot.ChannelMessageDelete(chatid, mesid)
 		//			go Delete1m(chatid,mesid)
 		//			mainTime()
@@ -133,10 +163,75 @@ func logicRS(s *discordgo.Session, m *discordgo.MessageCreate) {
 	fmt.Println("serverName: ", GuildState.Name, "Test DS String: "+m.Content)
 }
 
-/*
-func creater(guildid string, levelkz string) {
-	role,err:=DSBot.GuildRoleCreate(guildid)
-	if err !=nil {fmt.Println(err)}
-	DSBot.GuildRoleEdit(guildid,role.ID,"кз"+lvlkz,)
+func readReactionQueue(r *discordgo.MessageReactionAdd, message *discordgo.Message) {
+	db, er := databaseMysqlDs.DbConnection()
+	if er != nil {
+		log.Println(er)
+	}
+
+	user, err := DSBot.User(r.UserID)
+	if err != nil {
+		fmt.Println(err)
+	}
+	if user.ID != message.Author.ID {
+		inm := inMessage{
+			mtext:       "",
+			name:        user.Username,
+			nameMention: user.Mention(),
+			nameid:      user.ID,
+			mesid:       r.MessageID,
+			guildid:     r.GuildID,
+			chatid:      r.ChannelID,
+		}
+		if r.Emoji.Name == emPlus {
+			if Plus(db, inm.name, inm.chatid) {
+				DSBot.ChannelMessageDelete(inm.chatid, inm.mesid)
+			}
+		} else if r.Emoji.Name == emMinus {
+			if Minus(db, inm.name, inm.chatid) {
+				DSBot.ChannelMessageDelete(inm.chatid, inm.mesid)
+			}
+		} else if r.Emoji.Name == emOK || r.Emoji.Name == emCancel || r.Emoji.Name == emRsStart {
+			lvlkz, err = readMesID(db, r.MessageID)
+			if r.Emoji.Name == emOK {
+				RsPlus(db, lvlkz, "30", &inm)
+			} else if r.Emoji.Name == emCancel {
+				RsMinus(db, lvlkz, &inm)
+			} else if r.Emoji.Name == emRsStart {
+				RsStart(db, lvlkz, inm.name, inm.chatid, inm.guildid)
+			}
+		}
+	}
 }
-*/
+
+func hhelp(mentionName, chatid string) string {
+	mes, _ := DSBot.ChannelMessageSend(chatid, fmt.Sprintf("Справка для  %s \n"+
+		"ВНИМАНИЕ БОТ УДАЛЯЕТ СООБЩЕНИЯ \n ОТ ПОЛЬЗОВАТЕЛЕЙ ЧЕРЕЗ 3 МИНУТЫ \n\n"+
+		"Встать в очередь: [4-11]+  или\n"+
+		" [4-11]+[указать время ожидания в минутах]\n"+
+		" 9+  встать в очередь на КЗ 9ур.\n"+
+		" 9+60  встать на КЗ 9ур, время ожидания не более 60 минут.\n"+
+		"Покинуть очередь: [4-11] -\n"+
+		" 9- выйти из очереди КЗ 9ур.\n"+
+		"Посмотреть список активных очередей: о[4-11]\n"+
+		" о9  вывод очередь для вашей Кз\n"+
+		"Получить роль кз: + [5-11]\n"+
+		" +9   получить роль КЗ 9ур.\n"+
+		" -9   снять роль ", mentionName))
+	return mes.ID
+}
+func hhelp1(chatid string) {
+	DSBot.ChannelMessageSend(chatid, fmt.Sprintf("Справка \n"+
+		"ВНИМАНИЕ БОТ УДАЛЯЕТ СООБЩЕНИЯ \n ОТ ПОЛЬЗОВАТЕЛЕЙ ЧЕРЕЗ 3 МИНУТЫ \n\n"+
+		"Встать в очередь: [4-11]+  или\n"+
+		" [4-11]+[указать время ожидания в минутах]\n"+
+		" 9+  встать в очередь на КЗ 9ур.\n"+
+		" 9+60  встать на КЗ 9ур, время ожидания не более 60 минут.\n"+
+		"Покинуть очередь: [4-11] -\n"+
+		" 9- выйти из очереди КЗ 9ур.\n"+
+		"Посмотреть список активных очередей: о[4-11]\n"+
+		" о9  вывод очередь для вашей Кз\n"+
+		"Получить роль кз: + [5-11]\n"+
+		" +9   получить роль КЗ 9ур.\n"+
+		" -9   снять роль "))
+}

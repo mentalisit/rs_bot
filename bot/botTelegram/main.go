@@ -50,6 +50,8 @@ func updatesChannelTg(u tgbotapi.UpdateConfig, db *sql.DB) {
 		} else if update.MyChatMember != nil {
 			myChatMember(update.MyChatMember)
 
+		} else if update.EditedMessage != nil {
+			fmt.Println(update.EditedMessage)
 		} else {
 			fmt.Println(1, update)
 			fmt.Println(2, update.ChatJoinRequest)
@@ -61,7 +63,6 @@ func updatesChannelTg(u tgbotapi.UpdateConfig, db *sql.DB) {
 			fmt.Println(8, update.MyChatMember)
 			fmt.Println(9, update.Poll)
 			fmt.Println(10, update.PollAnswer)
-			fmt.Println(11, update.EditedMessage)
 			fmt.Println(12, update.PreCheckoutQuery)
 			fmt.Println(13, update.ShippingQuery)
 

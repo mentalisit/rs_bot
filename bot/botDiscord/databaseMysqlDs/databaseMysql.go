@@ -67,6 +67,7 @@ func DbConnection() (*sql.DB, error) {
 	if no == 1 {
 		createTableSborkz(db)
 		createTableNumkz(db)
+		createTableRsevent(db)
 		//createTableSubscribe(db)
 		//createTableSubscribe3(db)
 	}
@@ -84,6 +85,7 @@ func init() {
 	//log.Printf("Successfully connected to database")
 	err = createTableSborkz(db)
 	createTableNumkz(db)
+	createTableRsevent(db)
 	//createTableSubscribe(db)
 	//createTableSubscribe3(db)
 	if err != nil {

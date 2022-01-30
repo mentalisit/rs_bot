@@ -14,7 +14,7 @@ func readAll(db *sql.DB, lvlkz string, chatid string) string {
 
 	a := []string{}
 	for results.Next() {
-		var t Sborkzds
+		var t Sborkz
 		err = results.Scan(&t.Name, &t.Nameid, &t.Mention, &t.Mesid, &t.Timedown)
 		rs <- fmt.Sprintf("%s", t.Mention)
 		rst <- fmt.Sprintf("%d", t.Timedown)
@@ -31,13 +31,25 @@ func readMesIDname(db *sql.DB, name, lvlkz, chatid string) string {
 		log.Println(err)
 	}
 	for results.Next() {
-		//fmt.Println("подключаемся к дб дс месид")
-		var t Sborkzds
+		var t Sborkz
 		err = results.Scan(&t.Mesid)
 		mesid = t.Mesid
-		//fmt.Println(t.Mesid, "vvvvvvvvvvvv")
 		return mesid
 	}
-	//fmt.Println(mesid, "ffffffff")
 	return mesid
+}
+
+func readMesID(db *sql.DB, mesid string) (string, error) {
+	results, err := db.Query("SELECT lvlkz FROM sborkz WHERE mesid = ? AND active = 0", mesid)
+	if err != nil {
+		log.Println(err)
+	}
+	a := []string{}
+	for results.Next() {
+		var t Sborkz
+		err = results.Scan(&t.Lvlkz)
+		a = append(a, t.Lvlkz)
+	}
+	a = removeDuplicateElementString(a)
+	return a[0], err
 }

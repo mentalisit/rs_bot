@@ -22,7 +22,7 @@ func oneMinutsTimer(db *sql.DB) {
 		if err != nil {
 			fmt.Println(err)
 		}
-		var tagDS Sborkzds
+		var tagDS Sborkz
 		for results.Next() {
 			err = results.Scan(&tagDS.Name, &tagDS.Nameid, &tagDS.Mesid, &tagDS.Timedown)
 			a = append(a, tagDS.Mesid)
@@ -42,14 +42,14 @@ func oneMinutsTimer(db *sql.DB) {
 		}
 	}
 }
-func readALL(db *sql.DB, mesid string) Sborkzds {
+func readALL(db *sql.DB, mesid string) Sborkz {
 	results, err := db.Query("SELECT * FROM sborkz WHERE  mesid = ? AND active = 0", mesid)
 	if err != nil {
 		log.Println(err)
 	}
-	var t Sborkzds
+	var t Sborkz
 	for results.Next() {
-		err = results.Scan(&t.Id, &t.Name, &t.Nameid, &t.Mention, &t.Guildid, &t.Lvlkz, &t.Chatid, &t.Mesid, &t.Timedown, &t.Active)
+		err = results.Scan(&t.Id, &t.Name, &t.Nameid, &t.Mention, &t.Guildid, &t.Lvlkz, &t.Chatid, &t.Mesid, &t.Time, &t.Date, &t.numberkz, &t.numberevent, &t.eventpoints, &t.Timedown, &t.Active)
 		//rs <- fmt.Sprintf("%s", t.Mention)
 		//rst <- fmt.Sprintf("%d", t.Timedown)
 	}
@@ -76,7 +76,7 @@ func messageupdate(db *sql.DB, mesid string) {
 	}
 }
 
-func counts1q(db *sql.DB, t Sborkzds) {
+func counts1q(db *sql.DB, t Sborkz) {
 	readAll(db, t.Lvlkz, t.Chatid)
 	name1 = <-rs + "  🕒  " + <-rst
 	name2 = ""
@@ -93,7 +93,7 @@ func counts1q(db *sql.DB, t Sborkzds) {
 	})
 }
 
-func counts2q(db *sql.DB, t Sborkzds) {
+func counts2q(db *sql.DB, t Sborkz) {
 	readAll(db, t.Lvlkz, t.Chatid)
 	name1 = <-rs + "  🕒  " + <-rst
 	name2 = <-rs + "  🕒  " + <-rst
@@ -110,7 +110,7 @@ func counts2q(db *sql.DB, t Sborkzds) {
 	})
 }
 
-func counts3q(db *sql.DB, t Sborkzds) {
+func counts3q(db *sql.DB, t Sborkz) {
 	readAll(db, t.Lvlkz, t.Chatid)
 	name1 = <-rs + "  🕒  " + <-rst
 	name2 = <-rs + "  🕒  " + <-rst
@@ -141,8 +141,8 @@ func msqlTimeo(db *sql.DB) {
 		panic(err.Error())
 	}
 	for results.Next() {
-		var t Sborkzds
-		err = results.Scan(&t.Id, &t.Name, &t.Nameid, &t.Mention, &t.Guildid, &t.Lvlkz, &t.Chatid, &t.Mesid, &t.Timedown, &t.Active)
+		var t Sborkz
+		err = results.Scan(&t.Id, &t.Name, &t.Nameid, &t.Mention, &t.Guildid, &t.Lvlkz, &t.Chatid, &t.Mesid, &t.Time, &t.Date, &t.numberkz, &t.numberevent, &t.eventpoints, &t.Timedown, &t.Active)
 		inmes := inMessage{
 			mtext:       "",
 			name:        t.Name,
@@ -154,6 +154,8 @@ func msqlTimeo(db *sql.DB) {
 		}
 		if t.Timedown == 3 {
 			mes3s := SendChannel(t.Chatid, t.Mention+" время почти вышло  ...\n если ты еще тут пиши +")
+			DSBot.MessageReactionAdd(t.Chatid, mes3s, emPlus)
+			DSBot.MessageReactionAdd(t.Chatid, mes3s, emMinus)
 			go Delete3m(t.Chatid, mes3s)
 		} else if t.Timedown == 0 {
 			RsMinus(db, t.Lvlkz, &inmes)
