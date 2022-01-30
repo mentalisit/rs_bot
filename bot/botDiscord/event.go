@@ -25,8 +25,8 @@ func qweryNumevent0(db *sql.DB, chatid string) int {
 
 // старт ивента
 
-func EventStart(db *sql.DB, name string, chatid string) {
-	if name == "Mentalisit" {
+func EventStart(db *sql.DB, name, nameid string, chatid string) {
+	if name == "Mentalisit" || checkAdmin(nameid, chatid) {
 		//проверяем, есть ли активный ивент
 		event1 := qweryNumevent1(db, chatid)
 		log.Println("event", event1)
@@ -59,8 +59,8 @@ func EventStart(db *sql.DB, name string, chatid string) {
 	}
 }
 
-func EventStop(db *sql.DB, name string, chatid string) {
-	if name == "Mentalisit" {
+func EventStop(db *sql.DB, name, nameid string, chatid string) {
+	if name == "Mentalisit" || checkAdmin(nameid, chatid) {
 		event1 := qweryNumevent1(db, chatid)
 		if event1 > 0 {
 			//update
@@ -90,7 +90,7 @@ func countEventsPoints(db *sql.DB, chatid string, numberkz int) int {
 }
 
 // блок внесения очков за походы на КЗ во время ивента
-func EventPoints(db *sql.DB, chatid string, name string, numberkz, points int) {
+func EventPoints(db *sql.DB, chatid string, name, nameid string, numberkz, points int) {
 	// проверяем активен ли ивент
 	event1 := qweryNumevent1(db, chatid)
 	if event1 > 0 {
@@ -100,7 +100,7 @@ func EventPoints(db *sql.DB, chatid string, name string, numberkz, points int) {
 		err := row.Scan(&countEventNames)
 		if err != nil {
 		}
-		if countEventNames > 0 {
+		if countEventNames > 0 || checkAdmin(nameid, chatid) {
 			pointsGood := countEventsPoints(db, chatid, numberkz)
 			if pointsGood > 0 {
 				mes := SendChannel(chatid, "данные о кз уже внесены ")
