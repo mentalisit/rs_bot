@@ -150,7 +150,8 @@ func CreateTableTempTopEvent(db *sql.DB) error {
 func CreateTableChannel(db *sql.DB) error {
 	query := `CREATE TABLE IF NOT EXISTS channel(
 		id int primary key auto_increment,
-		channel VARCHAR(30) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci'
+		channel VARCHAR(30) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci',
+		mesidhelp VARCHAR(30) NULL DEFAULT NULL COLLATE 'utf8mb4_unicode_ci'
 	)`
 	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancelfunc()
