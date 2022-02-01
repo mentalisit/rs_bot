@@ -76,9 +76,9 @@ func Start() {
 		fmt.Println(err.Error())
 	}
 	log.Println("Бот DISCORD запущен!!!")
-	readChannel()
-
+	readChannelConfig()
 }
+
 func MessageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
 	message, err := DSBot.ChannelMessage(r.ChannelID, r.MessageID)
 	if err != nil {
@@ -94,7 +94,9 @@ func messageHandler(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 	if len(m.Content) > 0 {
-		if checkChannel(m.ChannelID) {
+		ok, config := checkChannelConfig(m.ChannelID)
+		if ok {
+			fmt.Println(config)
 			logicRS(s, m)
 			cleanChat(m)
 		}
