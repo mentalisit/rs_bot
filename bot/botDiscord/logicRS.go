@@ -223,8 +223,8 @@ func hhelp(mentionName, chatid string) string {
 		" -9   снять роль ", mentionName))
 	return mes.ID
 }
-func hhelp1(chatid string) {
-	DSBot.ChannelMessageSend(chatid, fmt.Sprintf("Справка \n"+
+func hhelp1(chatid string) string {
+	mes, _ := DSBot.ChannelMessageSend(chatid, fmt.Sprintf("Справка \n"+
 		"ВНИМАНИЕ БОТ УДАЛЯЕТ СООБЩЕНИЯ \n ОТ ПОЛЬЗОВАТЕЛЕЙ ЧЕРЕЗ 3 МИНУТЫ \n\n"+
 		"Встать в очередь: [4-11]+  или\n"+
 		" [4-11]+[указать время ожидания в минутах]\n"+
@@ -238,4 +238,5 @@ func hhelp1(chatid string) {
 		"Получить роль кз: + [5-11]\n"+
 		" +9   получить роль КЗ 9ур.\n"+
 		" -9   снять роль "))
+	return mes.ID
 }

@@ -6,12 +6,14 @@ import (
 	"log"
 	"rs_bot/bot/botDiscord/databaseMysqlDs"
 	"strings"
+	"time"
 )
 
 var p = New()
 
 type Configs struct {
 	DelMesComplite bool
+	mesidhelp      string
 	Primer         string
 }
 type Channel struct {
@@ -30,7 +32,7 @@ func New() *Proxies {
 
 type Proxies []Channel
 
-func addCorp(CorpName string, DsChannel string, TgChannel int64, DelMesComplite bool) {
+func addCorp(CorpName string, DsChannel string, TgChannel int64, DelMesComplite bool, mesidhelp string) {
 	corpConfig := Channel{
 		Type:      0xff,
 		CorpName:  CorpName,
@@ -38,6 +40,7 @@ func addCorp(CorpName string, DsChannel string, TgChannel int64, DelMesComplite 
 		TgChannel: TgChannel,
 		Config: &Configs{
 			DelMesComplite: DelMesComplite,
+			mesidhelp:      mesidhelp,
 			Primer:         "",
 		},
 	}
@@ -69,7 +72,7 @@ func readChannelConfig() { // чтение с бд и добавление в м
 	var channel string
 	for results.Next() {
 		err = results.Scan(&channel)
-		addCorp("", channel, 0, true)
+		addCorp("", channel, 0, true, "")
 	}
 	db.Close()
 }
@@ -105,7 +108,7 @@ func accessAddChannel(chatid string) { // внесение в дб и добав
 			fmt.Println(err.Error())
 		}
 		db.Close()
-		addCorp("", chatid, 0, true)
+		addCorp("", chatid, 0, true, "")
 		mes := SendChannel(chatid, "Спасибо за активацию.\nпиши Справка")
 		go Delete1m(chatid, mes)
 	}
@@ -130,5 +133,41 @@ func accessDelChannel(chatid string) { //удаление с бд и масив�
 
 		mes := SendChannel(chatid, "вы отключили мои возможности")
 		go Delete1m(chatid, mes)
+	}
+}
+
+func autohelp() {
+	tm := time.Now()
+	mtime := (tm.Format("15:04"))
+	if mtime == "12:00" {
+		db, er := databaseMysqlDs.DbConnection()
+		if er != nil {
+			log.Println(er)
+		}
+		results, err := db.Query("SELECT channel,mesidhelp FROM channel")
+		if err != nil {
+			log.Println(err)
+		}
+		var channel, mesidhelp string
+		for results.Next() {
+			err = results.Scan(&channel, &mesidhelp)
+			if mesidhelp != "" {
+				go Delete5s(channel, mesidhelp)
+				newMesidHelp := hhelp1(channel) ////////////
+				fmt.Println(newMesidHelp)
+				_, err := db.Exec(`update channel set mesidhelp = ? where channel = ? `, newMesidHelp, channel)
+				if err != nil {
+					log.Println(err)
+				}
+			} else {
+				newMesidHelp := hhelp1(channel)
+				_, err := db.Exec(`update channel set mesidhelp = ? where channel = ? `, newMesidHelp, channel)
+				if err != nil {
+					log.Println(err)
+				}
+			}
+		}
+		db.Close()
+
 	}
 }

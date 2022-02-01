@@ -164,4 +164,5 @@ func msqlTimeo(db *sql.DB) {
 		}
 	}
 	oneMinutsTimer(db)
+	autohelp()
 }
