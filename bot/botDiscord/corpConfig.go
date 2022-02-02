@@ -6,7 +6,6 @@ import (
 	"log"
 	"rs_bot/bot/botDiscord/databaseMysqlDs"
 	"strings"
-	"time"
 )
 
 var p = New()
@@ -133,41 +132,5 @@ func accessDelChannel(chatid string) { //удаление с бд и масив�
 
 		mes := SendChannel(chatid, "вы отключили мои возможности")
 		go Delete1m(chatid, mes)
-	}
-}
-
-func autohelp() {
-	tm := time.Now()
-	mtime := (tm.Format("15:04"))
-	if mtime == "12:00" {
-		db, er := databaseMysqlDs.DbConnection()
-		if er != nil {
-			log.Println(er)
-		}
-		results, err := db.Query("SELECT channel,mesidhelp FROM channel")
-		if err != nil {
-			log.Println(err)
-		}
-		var channel, mesidhelp string
-		for results.Next() {
-			err = results.Scan(&channel, &mesidhelp)
-			if mesidhelp != "" {
-				go Delete5s(channel, mesidhelp)
-				newMesidHelp := hhelp1(channel) ////////////
-				fmt.Println(newMesidHelp)
-				_, err := db.Exec(`update channel set mesidhelp = ? where channel = ? `, newMesidHelp, channel)
-				if err != nil {
-					log.Println(err)
-				}
-			} else {
-				newMesidHelp := hhelp1(channel)
-				_, err := db.Exec(`update channel set mesidhelp = ? where channel = ? `, newMesidHelp, channel)
-				if err != nil {
-					log.Println(err)
-				}
-			}
-		}
-		db.Close()
-
 	}
 }
