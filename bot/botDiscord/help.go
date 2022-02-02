@@ -52,7 +52,7 @@ func hhelp1(chatid string) (mesid string, error error) {
 func autohelp() {
 	tm := time.Now()
 	mtime := (tm.Format("15:04"))
-	if mtime != "12:00" {
+	if mtime == "12:00" {
 		db, er := databaseMysqlDs.DbConnection()
 		if er != nil {
 			log.Println(er)
