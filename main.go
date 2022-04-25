@@ -4,8 +4,7 @@ import (
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
-	"rs_bot/bot/botDiscord"
-	"rs_bot/bot/botTelegram"
+	"rs_bot/bot/NewBot"
 	"rs_bot/bot/timer"
 )
 
@@ -19,8 +18,8 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		logrus.Fatalf("error loading env variables: %s", err.Error())
 	}
-	go botDiscord.Start()
-	go botTelegram.StartTgBot()
+	//go bot2.StartBot()
+	NewBot.StartBot()
 
 	<-make(chan struct{})
 	return

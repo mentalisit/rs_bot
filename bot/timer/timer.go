@@ -2,20 +2,22 @@ package timer
 
 import (
 	"log"
-	"rs_bot/bot/botDiscord"
-	"rs_bot/bot/botTelegram"
+	"rs_bot/bot/NewBot"
 	"time"
 )
 
 //цикл минутный
 func Timer() {
+
 	for {
-		time.Sleep(1 * time.Minute)
 
-		log.Println("минута")
+		tm := time.Now().Second()
+		if tm == 0 {
+			log.Println("минута")
 
-		go botTelegram.MinusMin()
-		go botDiscord.MinusMin()
+			NewBot.MinusMin()
+		}
+		time.Sleep(1 * time.Second)
 
 	}
 }
