@@ -91,7 +91,7 @@ func (in inMessage) RsPlus() {
 				lvlk := roleToIdPing(in.lvlkz, in.config.Config.Guildid)
 				lvlk3 := roleToIdPing(in.lvlkz+"+", in.config.Config.Guildid)
 				EmbedDS(name1, name2, name3, name4, lvlk, numkzL)
-				text := lvlk + " 3/4 " + in.name + " присоединился к очереди " + lvlk3
+				text := lvlk + " 3/4 " + in.name + " присоединился к очереди " + lvlk3 + " нужен еще один для фулки"
 				go dsSendChannelDel5s(in.config.DsChannel, text)
 				dsEditComplex(u.user1.dsmesid, in.config.DsChannel)
 			}
