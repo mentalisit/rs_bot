@@ -50,6 +50,8 @@ func (in inMessage) RsPlus() {
 				//Тут будет логика ватса
 			}
 
+			in.insertDB(dsmesid, wamesid, tgmesid, numkzN)
+
 		} else if countQueue == 1 {
 			u := in.readAll()
 			dsmesid = u.user1.dsmesid
@@ -78,6 +80,7 @@ func (in inMessage) RsPlus() {
 			if in.config.WaChannel != "" {
 				//Тут будет логика ватса
 			}
+			in.insertDB(dsmesid, wamesid, tgmesid, numkzN)
 
 		} else if countQueue == 2 {
 			u := in.readAll()
@@ -110,6 +113,7 @@ func (in inMessage) RsPlus() {
 			if in.config.WaChannel != "" {
 				//Тут будет логика ватса
 			}
+			in.insertDB(dsmesid, wamesid, tgmesid, numkzN)
 
 		} else if countQueue == 3 {
 			u := in.readAll()
@@ -119,7 +123,7 @@ func (in inMessage) RsPlus() {
 				numkzL = numkzEvent
 			}
 
-			dsmesid := u.user1.dsmesid
+			dsmesid = u.user1.dsmesid
 
 			if in.config.DsChannel != "" {
 				if u.user1.tip == "ds" {
@@ -180,20 +184,26 @@ func (in inMessage) RsPlus() {
 				//Тут будет логика ватса
 			}
 
+			in.insertDB(dsmesid, wamesid, tgmesid, numkzN)
 			updateComplite(in.lvlkz, dsmesid, tgmesid, wamesid, numkzL, numberevent, in.config.CorpName)
+
+			//проверка есть ли игрок в других чатах
+			elseChat(u, in.config.CorpName, in.name)
+
 		}
 
-		numevent := 0 //qweryNumevent1(in)
-		mdate, mtime := currentTime()
-		insertSborkztg1 := `INSERT INTO sborkz(corpname,name,mention,tip,dsmesid,tgmesid,wamesid,time,date,lvlkz,
+	}
+}
+func (in inMessage) insertDB(dsmesid, wamesid string, tgmesid, numkzN int) {
+	numevent := 0 //qweryNumevent1(in)
+	mdate, mtime := currentTime()
+	insertSborkztg1 := `INSERT INTO sborkz(corpname,name,mention,tip,dsmesid,tgmesid,wamesid,time,date,lvlkz,
                    numkzn,numberkz,numberevent,eventpoints,active,timedown) 
 				VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`
-		_, err := db.Exec(insertSborkztg1, in.config.CorpName, in.name, in.nameMention, in.tip, dsmesid, tgmesid,
-			wamesid, mtime, mdate, in.lvlkz, numkzN, 0, numevent, 0, 0, in.timekz)
-		if err != nil {
-			log.Println(err)
-		}
-
+	_, err := db.Exec(insertSborkztg1, in.config.CorpName, in.name, in.nameMention, in.tip, dsmesid, tgmesid,
+		wamesid, mtime, mdate, in.lvlkz, numkzN, 0, numevent, 0, 0, in.timekz)
+	if err != nil {
+		log.Println(err)
 	}
 }
 
