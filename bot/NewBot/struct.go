@@ -77,3 +77,7 @@ type Names struct {
 	name3 string
 	name4 string
 }
+type emodjiUser struct {
+	id                       int
+	name, em1, em2, em3, em4 string
+}

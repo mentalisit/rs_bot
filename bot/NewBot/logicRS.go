@@ -157,6 +157,14 @@ func logicRs(in inMessage) {
 			lvlkz = arr8[0][2]
 		}
 
+		reEmodji := regexp.MustCompile(`^(Эмоджи)\s([1-4])\s([\P{Greek}]|[<:])$`)
+		arrEmodji := (reEmodji.FindAllStringSubmatch(str, -1))
+		if len(arrEmodji) > 0 {
+			slot := arrEmodji[0][2]
+			emodj := arrEmodji[0][3]
+
+			emodjiadd(in, slot, emodj)
+		}
 		if kzb == "+" {
 			//RsPlus(in, lvlkz, timekz)
 			in.RsPlus()
@@ -179,6 +187,8 @@ func logicRs(in inMessage) {
 		} else if len(arr8) > 0 {
 			go TopLevel(in, lvlkz)
 		} else if ifText(in) {
+		} else if str == "1" {
+			dsSendChannelDel1m(in.config.DsChannel, "test "+emReadName(in.name))
 		} else if in.config.TgChannel != 0 && in.config.DsChannel != "" {
 			go bridge(in)
 		}
@@ -225,6 +235,8 @@ func ifText(in inMessage) bool {
 		}
 	case "Топ":
 		TopAll(in)
+	case "Эмоджи":
+		emodjis(in)
 
 	default:
 		iftext = false

@@ -314,6 +314,7 @@ func (in inMessage) Queue() {
 	} else if count == 1 {
 		u := in.readAll()
 		if in.config.DsChannel != "" {
+			u.user1.name = emReadName(u.user1.name)
 			name1 = fmt.Sprintf("%s  🕒  %d  (%d)", u.user1.name, u.user1.timedown, u.user1.numkzn)
 			name2 = ""
 			name3 = ""
@@ -354,6 +355,8 @@ func (in inMessage) Queue() {
 		u := in.readAll()
 
 		if in.config.DsChannel != "" {
+			u.user1.name = emReadName(u.user1.name)
+			u.user2.name = emReadName(u.user2.name)
 			name1 = fmt.Sprintf("%s  🕒  %d  (%d)", u.user1.name, u.user1.timedown, u.user1.numkzn)
 			name2 = fmt.Sprintf("%s  🕒  %d  (%d)", u.user2.name, u.user2.timedown, u.user2.numkzn)
 			name3 = ""
@@ -395,6 +398,9 @@ func (in inMessage) Queue() {
 		u := in.readAll()
 
 		if in.config.DsChannel != "" {
+			u.user1.name = emReadName(u.user1.name)
+			u.user2.name = emReadName(u.user2.name)
+			u.user3.name = emReadName(u.user3.name)
 			name1 = fmt.Sprintf("%s  🕒  %d  (%d)", u.user1.name, u.user1.timedown, u.user1.numkzn)
 			name2 = fmt.Sprintf("%s  🕒  %d  (%d)", u.user2.name, u.user2.timedown, u.user2.numkzn)
 			name3 = fmt.Sprintf("%s  🕒  %d  (%d)", u.user3.name, u.user3.timedown, u.user3.numkzn)
