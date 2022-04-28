@@ -7,6 +7,7 @@ import (
 )
 
 func emodjis(in inMessage) {
+	iftipdelete(in)
 	e := emReadUsers(in.name)
 	text := "	Для установки эмоджи пиши текст \n" +
 		"Эмоджи пробел (номер ячейки1-4) пробел эмоджи \n" +
@@ -20,6 +21,7 @@ func emodjis(in inMessage) {
 	dsSendChannelDel1m(in.config.DsChannel, text)
 }
 func emodjiadd(in inMessage, slot, emo string) {
+	iftipdelete(in)
 	if in.tip == "ds" {
 		t := emReadUsers(in.name)
 		if len(t.name) > 0 {
