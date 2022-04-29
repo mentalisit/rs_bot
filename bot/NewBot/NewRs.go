@@ -188,7 +188,7 @@ func (in inMessage) RsPlus() {
 			updateComplite(in.lvlkz, dsmesid, tgmesid, wamesid, numkzL, numberevent, in.config.CorpName)
 
 			//проверка есть ли игрок в других чатах
-			elseChat(u, in.config.CorpName, in.name)
+			elseChat(u, in.name)
 
 		}
 
@@ -499,6 +499,7 @@ func (in inMessage) RsStart() {
 				mesidTgUpdate(tgmesid, in.lvlkz, in.config.CorpName)
 			}
 			updateComplite(in.lvlkz, dsmesid, tgmesid, wamesid, numberkz, numberevent, in.config.CorpName)
+			elseChat(u, in.name)
 		} else if count == 2 {
 			u := in.readAll()
 
@@ -547,6 +548,7 @@ func (in inMessage) RsStart() {
 				mesidTgUpdate(tgmesid, in.lvlkz, in.config.CorpName)
 			}
 			updateComplite(in.lvlkz, dsmesid, tgmesid, wamesid, numberkz, numberevent, in.config.CorpName)
+			elseChat(u, in.name)
 
 		} else if count == 3 {
 			u := in.readAll()
@@ -605,6 +607,7 @@ func (in inMessage) RsStart() {
 				mesidTgUpdate(tgmesid, in.lvlkz, in.config.CorpName)
 			}
 			updateComplite(in.lvlkz, dsmesid, tgmesid, wamesid, numberkz, numberevent, in.config.CorpName)
+			elseChat(u, in.name)
 		}
 	}
 }
