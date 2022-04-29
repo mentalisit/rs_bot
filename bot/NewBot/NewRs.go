@@ -25,7 +25,7 @@ func (in inMessage) RsPlus() {
 
 		if countQueue == 0 {
 			if in.config.DsChannel != "" {
-				name1 = fmt.Sprintf("%s  🕒  %s  (%d)", in.name, in.timekz, numkzN)
+				name1 = fmt.Sprintf("%s  🕒  %s  (%d)", emReadName(in.name), in.timekz, numkzN)
 				name2 = ""
 				name3 = ""
 				name4 = ""
@@ -57,8 +57,8 @@ func (in inMessage) RsPlus() {
 			dsmesid = u.user1.dsmesid
 
 			if in.config.DsChannel != "" {
-				name1 = fmt.Sprintf("%s  🕒  %d  (%d)", u.user1.name, u.user1.timedown, u.user1.numkzn)
-				name2 = fmt.Sprintf("%s  🕒  %s  (%d)", in.name, in.timekz, numkzN)
+				name1 = fmt.Sprintf("%s  🕒  %d  (%d)", emReadName(u.user1.name), u.user1.timedown, u.user1.numkzn)
+				name2 = fmt.Sprintf("%s  🕒  %s  (%d)", emReadName(in.name), in.timekz, numkzN)
 				name3 = ""
 				name4 = ""
 				lvlk := in.Ds.roleToIdPing(in)
@@ -87,9 +87,9 @@ func (in inMessage) RsPlus() {
 			dsmesid = u.user1.dsmesid
 
 			if in.config.DsChannel != "" {
-				name1 = fmt.Sprintf("%s  🕒  %d  (%d)", u.user1.name, u.user1.timedown, u.user1.numkzn)
-				name2 = fmt.Sprintf("%s  🕒  %d  (%d)", u.user2.name, u.user2.timedown, u.user2.numkzn)
-				name3 = fmt.Sprintf("%s  🕒  %s  (%d)", in.name, in.timekz, numkzN)
+				name1 = fmt.Sprintf("%s  🕒  %d  (%d)", emReadName(u.user1.name), u.user1.timedown, u.user1.numkzn)
+				name2 = fmt.Sprintf("%s  🕒  %d  (%d)", emReadName(u.user2.name), u.user2.timedown, u.user2.numkzn)
+				name3 = fmt.Sprintf("%s  🕒  %s  (%d)", emReadName(in.name), in.timekz, numkzN)
 				name4 = ""
 				lvlk := roleToIdPing(in.lvlkz, in.config.Config.Guildid)
 				lvlk3 := roleToIdPing(in.lvlkz+"+", in.config.Config.Guildid)

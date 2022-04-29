@@ -157,13 +157,15 @@ func logicRs(in inMessage) {
 			lvlkz = arr8[0][2]
 		}
 
-		reEmodji := regexp.MustCompile(`^(Эмоджи)\s([1-4])\s([\P{Greek}]|[<:])$`)
+		reEmodji := regexp.MustCompile("^(Эмоджи)\\s([1-4])\\s(<:\\w+:\\d+>)$")
 		arrEmodji := (reEmodji.FindAllStringSubmatch(str, -1))
 		if len(arrEmodji) > 0 {
-			slot := arrEmodji[0][2]
-			emodj := arrEmodji[0][3]
-
-			emodjiadd(in, slot, emodj)
+			emodjiadd(in, arrEmodji[0][2], arrEmodji[0][3])
+		}
+		reEmodji = regexp.MustCompile("^(Эмоджи)\\s([1-4])\\s(\\P{Greek})$")
+		arrEmodji = (reEmodji.FindAllStringSubmatch(str, -1))
+		if len(arrEmodji) > 0 {
+			emodjiadd(in, arrEmodji[0][2], arrEmodji[0][3])
 		}
 		if kzb == "+" {
 			//RsPlus(in, lvlkz, timekz)
