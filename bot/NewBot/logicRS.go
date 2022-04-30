@@ -78,7 +78,7 @@ func logicMixTelegram(m *tgbotapi.Message) {
 }
 
 func logicRs(in inMessage) {
-	fmt.Println(in.config.CorpName, in.tip, in.mtext)
+	fmt.Println(in.config.CorpName, in.tip, in.name, in.mtext)
 	var rss, kzb, subs, subs3, lvlkz, qwery string
 	file := false
 	if in.tip == "ds" && len(in.Ds.Attachments.ID) > 0 {
