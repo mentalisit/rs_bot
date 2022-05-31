@@ -1,5 +1,6 @@
 package NewBot
 
+/*
 import (
 	"encoding/json"
 	"fmt"
@@ -14,7 +15,7 @@ import (
 	"time"
 )
 
-type wa struct {
+type wa structBot {
 	startedAt int64
 }
 
@@ -35,6 +36,7 @@ func eventHandler(evt interface{}) {
 	}
 }
 */
+/*
 func eventHandler(rawEvt interface{}) {
 	mtext := ""
 	nameid := ""
@@ -181,3 +183,5 @@ func getSenderNotify(senderJid string) string {
 
 	return ""
 }
+
+*/

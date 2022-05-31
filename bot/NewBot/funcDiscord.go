@@ -3,7 +3,7 @@ package NewBot
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"log"
+	"github.com/sirupsen/logrus"
 	"strings"
 	"time"
 )
@@ -28,34 +28,34 @@ func dsEditComplex(dsmesid, dschatid string) {
 	}
 	_, err := DSBot.ChannelMessageEditComplex(a)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 }
 
 func MessageReactionAdd(s *discordgo.Session, r *discordgo.MessageReactionAdd) {
 	message, err := DSBot.ChannelMessage(r.ChannelID, r.MessageID)
 	if err != nil {
-		log.Println(err)
+		logrus.Println(err)
 	}
 	if message.Author.ID == s.State.User.ID {
 		readReactionQueue(r, message)
 	} else {
-		log.Println("message", message)
-		log.Println("err", err)
+		logrus.Println("message", message)
+		logrus.Println("err", err)
 	}
 }
 
 func readReactionQueue(r *discordgo.MessageReactionAdd, message *discordgo.Message) {
 	user, err := DSBot.User(r.UserID)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	if user.ID != message.Author.ID {
 		ok, config := checkChannelConfigDS(r.ChannelID)
 		if ok {
 			member, e := DSBot.GuildMember(config.Config.Guildid, user.ID)
 			if e != nil {
-				fmt.Println("ошибка в функдиск стр57", e)
+				logrus.Println("ошибка в функдиск стр57", e)
 			}
 			name := user.Username
 			if member.Nick != "" {
@@ -114,7 +114,7 @@ func readReactionQueue(r *discordgo.MessageReactionAdd, message *discordgo.Messa
 func reactionUserRemove(r *discordgo.MessageReactionAdd) {
 	err := DSBot.MessageReactionRemove(r.ChannelID, r.MessageID, r.Emoji.Name, r.UserID)
 	if err != nil {
-		fmt.Println("Ошибка удаления эмоджи", err)
+		logrus.Println("Ошибка удаления эмоджи", err)
 	}
 }
 
@@ -173,21 +173,21 @@ func roleToIdPing(rolePing, guildid string) string {
 	rolPing := "кз" + rolePing // добавляю буквы
 	g, err := DSBot.Guild(guildid)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	exist, role := roleExists(g, rolPing)
 	if !exist {
 		//создаем роль и возврашаем пинг
 		newRole, err := DSBot.GuildRoleCreate(guildid)
 		if err != nil {
-			fmt.Println(err)
+			logrus.Println(err)
 		}
 		role, err = DSBot.GuildRoleEdit(guildid, newRole.ID, rolPing, newRole.Color, newRole.Hoist, 37080064, true)
 		if err != nil {
-			fmt.Println(err)
+			logrus.Println(err)
 			err = DSBot.GuildRoleDelete(guildid, newRole.ID)
 			if err != nil {
-				fmt.Println(err)
+				logrus.Println(err)
 			}
 		}
 		return role.Mention()
@@ -197,7 +197,7 @@ func roleToIdPing(rolePing, guildid string) string {
 
 	r, err := DSBot.GuildRoles(guildid)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	l := len(r) // количество ролей на сервере
 	i := 0
@@ -215,7 +215,7 @@ func roleToIdPing(rolePing, guildid string) string {
 func dsSendChannelDel5s(chatid, text string) {
 	message, err := DSBot.ChannelMessageSend(chatid, text)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	time.Sleep(5 * time.Second)
 	DSBot.ChannelMessageDelete(chatid, message.ID)
@@ -227,7 +227,7 @@ func dsDelMessage(chatid, mesid string) {
 func dsSendChannelDel1m(chatid, text string) {
 	message, err := DSBot.ChannelMessageSend(chatid, text)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	dsDeleteMesageMinuts(chatid, message.ID, 1)
 }
@@ -235,7 +235,7 @@ func dsSendChannelDel1m(chatid, text string) {
 func dsSendChannel(chatid, text string) string {
 	message, err := DSBot.ChannelMessageSend(chatid, text)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	return message.ID
 }
@@ -278,13 +278,13 @@ func roleExists(g *discordgo.Guild, nameRoles string) (bool, *discordgo.Role) {
 func checkAdmin(nameid string, chatid string) bool {
 	perms, err := DSBot.UserChannelPermissions(nameid, chatid)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	if perms&discordgo.PermissionAdministrator != 0 {
-		fmt.Println("админ")
+		//logrus.Println("админ")
 		return true
 	} else {
-		fmt.Println("не админ")
+		//logrus.Println("не админ")
 		return false
 	}
 }
@@ -547,10 +547,10 @@ func replaceID(text,guild string )*discordgo.Member{
 
 */
 
-func dsChatName(chatid, guildid string) string {
+func dsChatName(guildid string) string {
 	g, err := DSBot.Guild(guildid)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	return g.Name
 }

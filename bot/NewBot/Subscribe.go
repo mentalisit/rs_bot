@@ -160,6 +160,7 @@ func Unsubscribe(in inMessage, lvlkz string, tipPing int) {
 	}
 }
 
+/*
 func SubscribePing(in inMessage, lvlkz string, tipPing int) {
 	var name1, names, men string
 	if rows, err := db.Query("SELECT nameid FROM subscribe WHERE lvlkz = ? AND chatid = ? AND tip = ?", lvlkz, in.config.TgChannel, tipPing); err == nil {
@@ -176,14 +177,21 @@ func SubscribePing(in inMessage, lvlkz string, tipPing int) {
 	mes := tgSendChannel(in.config.TgChannel, men)
 	go tgDeleteMesageMinuts(in.config.TgChannel, mes, 10)
 }
+*/
+
 func (in inMessage) SubscribePing(tipPing int) {
 
 	if in.config.TgChannel != 0 {
 		var name1, names, men string
+		var u Users
+		if tipPing == 3 {
+			u = in.readAll()
+		}
+
 		if rows, err := db.Query("SELECT nameid FROM subscribe WHERE lvlkz = ? AND chatid = ? AND tip = ?", in.lvlkz, in.config.TgChannel, tipPing); err == nil {
 			for rows.Next() {
 				rows.Scan(&name1)
-				if in.nameMention == name1 {
+				if in.nameMention == name1 || u.user1.mention == name1 || u.user2.mention == name1 || u.user3.mention == name1 {
 					continue
 				}
 				names = name1 + " "
@@ -191,7 +199,11 @@ func (in inMessage) SubscribePing(tipPing int) {
 			}
 			rows.Close()
 		}
-		mes := tgSendChannel(in.config.TgChannel, men)
-		go tgDeleteMesageMinuts(in.config.TgChannel, mes, 10)
+		if len(men) > 0 {
+			men = fmt.Sprintf("Сбор на кз%s\n%s", in.lvlkz, men)
+			mes := tgSendChannel(in.config.TgChannel, men)
+			go tgDeleteMesageMinuts(in.config.TgChannel, mes, 10)
+		}
+
 	}
 }

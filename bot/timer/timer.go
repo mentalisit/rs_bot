@@ -1,7 +1,6 @@
 package timer
 
 import (
-	"log"
 	"rs_bot/bot/NewBot"
 	"time"
 )
@@ -13,7 +12,7 @@ func Timer() {
 
 		tm := time.Now().Second()
 		if tm == 0 {
-			log.Println("минута")
+			//log.Println("минута")
 
 			NewBot.MinusMin()
 		}

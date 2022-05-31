@@ -9,8 +9,6 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/joho/godotenv v1.4.0
 	github.com/mattn/go-sqlite3 v1.14.10
-	github.com/mdp/qrterminal/v3 v3.0.0
 	github.com/sirupsen/logrus v1.8.1
-	go.mau.fi/whatsmeow v0.0.0-20220226201719-1051bbd4727f
-	google.golang.org/protobuf v1.27.1
+	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 )

@@ -17,6 +17,18 @@ type inMessage struct {
 	config        BotConfig
 	option        Option
 }
+type InMessage struct {
+	Mutex         sync.Mutex
+	mtext         string
+	tip           string
+	name          string
+	nameMention   string
+	lvlkz, timekz string
+	Ds            Ds
+	Tg            Tg
+	config        BotConfig
+	option        Option
+}
 type Option struct {
 	callback bool
 	edit     bool

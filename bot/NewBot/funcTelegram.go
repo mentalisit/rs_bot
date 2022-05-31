@@ -3,6 +3,7 @@ package NewBot
 import (
 	"fmt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/sirupsen/logrus"
 	"regexp"
 	"time"
 )
@@ -26,7 +27,7 @@ func updatesChannelTg(u tgbotapi.UpdateConfig) {
 			myChatMember(update.MyChatMember)
 
 		} else if update.EditedMessage != nil {
-			fmt.Println("Измененный текст в телеге ", update.EditedMessage.Text)
+			logrus.Println("Измененный текст в телеге ", update.EditedMessage.Text)
 		} else {
 			fmt.Println(1, update)
 		}
@@ -37,7 +38,7 @@ func callback(cb *tgbotapi.CallbackQuery) {
 	var lvlkz, kzb, timekz, rss string
 	callback := tgbotapi.NewCallback(cb.ID, cb.Data)
 	if _, err := TgBot.Request(callback); err != nil {
-		panic(err)
+		logrus.Panic(err)
 	}
 	ok, config := checkChannelConfigTG(cb.Message.Chat.ID)
 	if ok {
@@ -123,7 +124,7 @@ func tgSendEmded(lvlkz string, chatid int64, text string) int {
 	msg.ReplyMarkup = keyboardQueue
 	message, err := TgBot.Send(msg)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	return message.MessageID
 
@@ -139,7 +140,7 @@ func tgSendEmbedTime(chatid int64, text string) int {
 	msg.ReplyMarkup = keyboardQueue
 	message, err := TgBot.Send(msg)
 	if err != nil {
-		panic(err)
+		logrus.Panic(err)
 	}
 	return message.MessageID
 
@@ -203,7 +204,7 @@ func checkAdminTg(in inMessage) bool {
 		SuperGroupUsername string
 	}{ChatID: in.config.TgChannel, SuperGroupUsername: ""}})
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	for _, ad := range admins {
 		if in.name == ad.User.UserName && (ad.IsAdministrator() || ad.IsCreator()) {
@@ -232,11 +233,22 @@ func updatesComand(c *tgbotapi.Message) {
 		in := inMessage{
 			tip:         "tg",
 			nameMention: "@" + c.From.UserName,
+			Tg:          Tg{mesid: c.MessageID},
 			config:      config,
 		}
-		if c.Command() == "help" {
-			hhelpName(in)
-			tgDelMessage(c.Chat.ID, c.MessageID)
+		switch c.Command() {
+		case "help":
+			help(in)
+		case "helpqueue":
+			helpQueue(in)
+		case "helpnotification":
+			helpNotification(in)
+		case "helpevent":
+			helpEvent(in)
+		case "helptop":
+			helpTop(in)
+		case "helpicon":
+			helpIcon(in)
 		}
 	}
 }
@@ -247,7 +259,7 @@ func tgChatName(chatid int64) string {
 		SuperGroupUsername string
 	}{ChatID: chatid}})
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	return r.Title
 }

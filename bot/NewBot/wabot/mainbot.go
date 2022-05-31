@@ -1,5 +1,6 @@
 package wabot
 
+/*
 import (
 	"bufio"
 	"context"
@@ -510,3 +511,6 @@ func wasend() { //chatid,text string) {
 		log.Infof("Message sent (server timestamp: %s)", ts)
 	}
 }
+
+
+*/

@@ -3,6 +3,7 @@ package NewBot
 import (
 	"fmt"
 	"github.com/bwmarrin/discordgo"
+	"github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -25,21 +26,22 @@ func (Ds) roleToIdPing(in inMessage) string {
 	rolPing := "кз" + in.lvlkz // добавляю буквы
 	g, err := DSBot.Guild(in.config.Config.Guildid)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	exist, role := roleExists(g, rolPing)
 	if !exist {
 		//создаем роль и возврашаем пинг
 		newRole, err := DSBot.GuildRoleCreate(in.config.Config.Guildid)
 		if err != nil {
-			fmt.Println(err)
+			logrus.Println(err, "ошибка создания роли ")
+
 		}
 		role, err = DSBot.GuildRoleEdit(in.config.Config.Guildid, newRole.ID, rolPing, newRole.Color, newRole.Hoist, 37080064, true)
 		if err != nil {
-			fmt.Println(err)
+			logrus.Println(err, "Ошибка редактирования новой роли ")
 			err = DSBot.GuildRoleDelete(in.config.Config.Guildid, newRole.ID)
 			if err != nil {
-				fmt.Println(err)
+				logrus.Println(err, "удаления новой роли")
 			}
 		}
 		return role.Mention()
@@ -49,7 +51,7 @@ func (Ds) roleToIdPing(in inMessage) string {
 
 	r, err := DSBot.GuildRoles(in.config.Config.Guildid)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Println(err)
 	}
 	l := len(r) // количество ролей на сервере
 	i := 0

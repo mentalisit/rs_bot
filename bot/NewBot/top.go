@@ -232,15 +232,15 @@ func topall(in inMessage) { //Top
 }
 
 func topLevel(in inMessage, lvlkz string) { //TopLevel
-	mesage := "\xF0\x9F\x93\x96 ТОП Участников кз:" + lvlkz + "\n"
+	mesage := "\xF0\x9F\x93\x96 ТОП Участников кз" + lvlkz + "\n"
 	number := 1
 	var good bool = false
 	results, err := db.Query("SELECT name FROM sborkz WHERE corpname=? AND active=1  AND lvlkz = ? GROUP BY name ASC LIMIT 40", in.config.CorpName, lvlkz)
 	if err != nil {
 		log.Println(219, err)
 	}
-	ifInSend5s(in, "Сканирую базу данных")
 	var name string
+	ifInSend5s(in, "Сканирую базу данных")
 	for results.Next() {
 		err = results.Scan(&name)
 		if len(name) > 0 {
@@ -262,8 +262,8 @@ func topLevel(in inMessage, lvlkz string) { //TopLevel
 			}
 		}
 	}
-	ifInSend5s(in, "Формирую список ")
 	if good {
+		ifInSend5s(in, "Формирую список ")
 		resultsq, err := db.Query("SELECT * FROM temptopevent ORDER BY numkz DESC")
 		if err != nil {
 			log.Println(err)

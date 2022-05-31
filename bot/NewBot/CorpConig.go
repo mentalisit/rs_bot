@@ -1,10 +1,9 @@
 package NewBot
 
 import (
-	"fmt"
 	"github.com/bwmarrin/discordgo"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
-	"log"
+	"github.com/sirupsen/logrus"
 	"rs_bot/bot/NewBot/database"
 	"strings"
 )
@@ -64,8 +63,33 @@ func checkChannelConfigDS(chatid string) (channelGood bool, config BotConfig) {
 	}
 	return channelGood, config
 }
+func CheckChannelConfigDS(chatid string) (channelGood bool, config BotConfig) {
+	if chatid != "" {
+		for _, pp := range *P {
+			if chatid == pp.DsChannel {
+				channelGood = true
+				config = pp
+				break
+			}
+		}
+	}
+	return channelGood, config
+}
 
 func checkChannelConfigTG(chatid int64) (channelGood bool, config BotConfig) {
+	if chatid != 0 {
+		for _, pp := range *P {
+			if chatid == pp.TgChannel {
+				channelGood = true
+				config = pp
+				break
+			}
+		}
+	}
+	return channelGood, config
+}
+
+func CheckChannelConfigTG(chatid int64) (channelGood bool, config BotConfig) {
 	if chatid != 0 {
 		for _, pp := range *P {
 			if chatid == pp.TgChannel {
@@ -94,11 +118,11 @@ func checkCorpNameConfig(corpname string) (channelGood bool, config BotConfig) {
 func readBotConfig() { // чтение с бд и добавление в масив
 	db, err := database.DbConnection()
 	if err != nil {
-		log.Println(err)
+		logrus.Println(err)
 	}
 	results, err := db.Query("SELECT * FROM config")
 	if err != nil {
-		log.Println(err)
+		logrus.Println(err)
 	}
 	var t TableConfig
 	for results.Next() {
@@ -108,6 +132,16 @@ func readBotConfig() { // чтение с бд и добавление в мас
 }
 
 func accesChatDS(m *discordgo.MessageCreate) {
+	res := strings.HasPrefix(m.Content, ".")
+	if res == true && m.Content == ".add" {
+		go dsDeleteMesage5s(m.ChannelID, m.ID)
+		accessAddChannelDs(m.ChannelID, m.GuildID)
+	} else if res == true && m.Content == ".del" {
+		go dsDeleteMesage5s(m.ChannelID, m.ID)
+		accessDelChannelDs(m.ChannelID)
+	}
+}
+func AccesChatDS(m *discordgo.MessageCreate) {
 	res := strings.HasPrefix(m.Content, ".")
 	if res == true && m.Content == ".add" {
 		go dsDeleteMesage5s(m.ChannelID, m.ID)
@@ -133,15 +167,15 @@ func accessAddChannelDs(chatid, guildid string) { // внесение в дб и
 		go dsSendChannelDel1m(chatid, "Я уже могу работать на вашем канале\n"+
 			"повторная активация не требуется.\nнапиши Справка1")
 	} else {
-		chatName := dsChatName(chatid, guildid)
+		chatName := dsChatName(guildid)
 		insertConfig := `INSERT INTO config (corpname,dschannel,tgchannel,wachannel,mesiddshelp,mesidtghelp,delmescomplite,guildid) VALUES (?,?,?,?,?,?,?,?)`
 		statement, err := db.Prepare(insertConfig)
 		if err != nil {
-			fmt.Println(err)
+			logrus.Println(err)
 		}
 		_, err = statement.Exec(chatName, chatid, 0, "", "", 0, 0, guildid)
 		if err != nil {
-			fmt.Println(err.Error())
+			logrus.Println(err.Error())
 		}
 		//db.Close()
 		addCorp(chatName, chatid, 0, "", 1, "", 0, guildid)
@@ -155,7 +189,7 @@ func accessDelChannelDs(chatid string) { //удаление с бд и маси�
 	} else {
 		_, err := db.Exec("delete from config where dschannel = ? ", chatid)
 		if err != nil {
-			log.Println(err)
+			logrus.Println(err)
 		}
 		*P = *New()
 		readBotConfig()
@@ -167,20 +201,20 @@ func accessAddChannelTg(chatid int64) { // внесение в дб и доба�
 	ok, _ := checkChannelConfigTG(chatid)
 	if ok {
 		go tgSendChannelDel1m(chatid, "Я уже могу работать на вашем канале\n"+
-			"повторная активация не требуется.\nнапиши Справка1")
+			"повторная активация не требуется.\nнапиши Справка")
 	} else {
 		chatName := tgChatName(chatid)
 		insertConfig := `INSERT INTO config (corpname,dschannel,tgchannel,wachannel,mesiddshelp,mesidtghelp,delmescomplite) VALUES (?,?,?,?,?,?,?)`
 		statement, err := db.Prepare(insertConfig)
 		if err != nil {
-			fmt.Println(err)
+			logrus.Println(err)
 		}
 		_, err = statement.Exec(chatName, "", chatid, "", "", 0, 0)
 		if err != nil {
-			fmt.Println(err.Error())
+			logrus.Println(err.Error())
 		}
 		addCorp(chatName, "", chatid, "", 1, "", 0, "")
-		go tgSendChannelDel1m(chatid, "Спасибо за активацию.\nпиши Справка1")
+		go tgSendChannelDel1m(chatid, "Спасибо за активацию.\nпиши Справка")
 	}
 }
 func accessDelChannelTg(chatid int64) { //удаление с бд и масива для блокировки
@@ -190,7 +224,7 @@ func accessDelChannelTg(chatid int64) { //удаление с бд и масив
 	} else {
 		_, err := db.Exec("delete from config where tgchannel = ? ", chatid)
 		if err != nil {
-			log.Println(err)
+			logrus.Println(err)
 		}
 		*P = *New()
 		readBotConfig()

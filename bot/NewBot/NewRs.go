@@ -8,6 +8,8 @@ import (
 	"time"
 )
 
+const nickname = "Для того что бы БОТ мог Вас индентифицировать, создайте уникальный НикНей в настройках. Вы можете использовать a-z, 0-9 и символы подчеркивания. Минимальная длина - 5 символов."
+
 func (in inMessage) RsPlus() {
 	in.Mutex.Lock()
 	defer in.Mutex.Unlock()
@@ -108,7 +110,7 @@ func (in inMessage) RsPlus() {
 				go tgDelMessage(in.config.TgChannel, u.user1.tgmesid)
 				tgmesid = tgSendEmded(in.lvlkz, in.config.TgChannel, text)
 				mesidTgUpdate(tgmesid, in.lvlkz, in.config.CorpName)
-				SubscribePing(in, in.lvlkz, 3)
+				in.SubscribePing(3)
 			}
 			if in.config.WaChannel != "" {
 				//Тут будет логика ватса
@@ -188,7 +190,7 @@ func (in inMessage) RsPlus() {
 			updateComplite(in.lvlkz, dsmesid, tgmesid, wamesid, numkzL, numberevent, in.config.CorpName)
 
 			//проверка есть ли игрок в других чатах
-			elseChat(u, in.name)
+			go elseChat(u, in.name)
 
 		}
 

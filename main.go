@@ -1,26 +1,33 @@
 package main
 
-import (
+/*
+
+	import (
 	"fmt"
-	"github.com/joho/godotenv"
-	"github.com/sirupsen/logrus"
-	"rs_bot/bot/NewBot"
-	"rs_bot/bot/timer"
+	"os"
+	"rs_bot/pkg/config"
 )
 
-func init() {
-	go timer.Timer()
-}
-
-func main() {
-	logrus.SetFormatter(new(logrus.JSONFormatter))
-	fmt.Println("ЗАПУСК БОТА")
-	if err := godotenv.Load(); err != nil {
-		logrus.Fatalf("error loading env variables: %s", err.Error())
+func main()  {
+	a:=os.Getenv("dbUsername")
+	fmt.Println(a)
+	cfg,ok:=config.InitEnv()
+	if !ok{
+		fmt.Println(cfg)
+		fmt.Println("Ошибка чтения файла конфигурации")
 	}
-	//go bot2.StartBot()
-	NewBot.StartBot()
-
-	<-make(chan struct{})
-	return
-}
+fmt.Println(cfg)*/
+//Tg, err := tgbotapi.NewBotAPI(cfg.TokenT)
+//if err != nil {
+//	log.Println("Ошибка запуска телеграмм бота",err)
+//}
+//Tg.Debug = false
+//
+//Ds, err := discordgo.New("Bot " + cfg.TokenD)
+//if err != nil {
+//	log.Println("Ошибка запуска дискорд бота ",err)
+//}
+//Db,err:=repository.DbConnection(*cfg)
+//
+//bot.InitBOT(Tg,Ds,Db)
+//}
